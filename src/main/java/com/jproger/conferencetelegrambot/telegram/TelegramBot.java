@@ -69,7 +69,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId = update.getMessage().getChatId();
         User user = update.getMessage().getFrom();
         UserWorkflow userWorkflow = usersWorkflow.get(user.getId());
-        String topicKey = update.getMessage().getText().split(" ")[1];
+        String topicKey = null;
+        String[] commandParts = update.getMessage().getText().split(" ");
+
+        if(commandParts.length > 1) {
+            topicKey = commandParts[1];
+        }
 
         if (Objects.isNull(userWorkflow)) {
             userWorkflow = UserWorkflow.builder()
@@ -85,7 +90,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         } else {
             com.jproger.conferencetelegrambot.entities.Contact contact = contactAPI.getContactByTelegramID(user.getId().toString());
 
-            userWorkflow.setTopicKey(topicKey);
+            if(Objects.nonNull(topicKey)) {
+                userWorkflow.setTopicKey(topicKey);
+            }
 
             sendMessage(chatId, "Hello " + contact.getName() + "!");
         }
