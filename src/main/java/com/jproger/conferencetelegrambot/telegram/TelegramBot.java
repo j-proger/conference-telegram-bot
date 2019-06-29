@@ -167,15 +167,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (userWorkflow.getState() != UserWorkflow.State.ASK_QUESTION)
             throw new IllegalStateException("User can't ask questions");
 
-        Question question = Question.builder()
-                .question(questionText)
-                .topicKey(userWorkflow.getTopicKey())
-                .author(contactAPI.getContactByTelegramID(userId.toString()))
-                .build();
+        if(Objects.nonNull(userWorkflow.getTopicKey())) {
+            Question question = Question.builder()
+                    .question(questionText)
+                    .topicKey(userWorkflow.getTopicKey())
+                    .author(contactAPI.getContactByTelegramID(userId.toString()))
+                    .build();
 
-        questionAPI.addQuestion(question);
+            questionAPI.addQuestion(question);
 
-        sendMessage(chatId, "Your question registered. You can make new questions.");
+            sendMessage(chatId, "Your question registered. You can make new questions.");
+        } else {
+            sendMessage(chatId, "Please scan QR code from agende and try ask your question again.");
+        }
     }
 
     private void sendMessage(Long chatId, String text) {
