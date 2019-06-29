@@ -158,6 +158,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         message.setText(text);
         message.setChatId(chatId);
+        message.setReplyMarkup(new ReplyKeyboardMarkup());
 
         try {
             execute(message);

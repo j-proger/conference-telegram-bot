@@ -2,10 +2,13 @@ package com.jproger.conferencetelegrambot.model;
 
 import com.jproger.conferencetelegrambot.api.ContactAPI;
 import com.jproger.conferencetelegrambot.entities.Contact;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ContactStore implements ContactAPI {
 
   private static volatile ContactStore instance = null;

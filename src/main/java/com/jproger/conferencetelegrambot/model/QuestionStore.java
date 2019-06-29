@@ -2,9 +2,12 @@ package com.jproger.conferencetelegrambot.model;
 
 import com.jproger.conferencetelegrambot.api.QuestionAPI;
 import com.jproger.conferencetelegrambot.entities.Question;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class QuestionStore implements QuestionAPI {
 
   private static volatile QuestionStore instance = null;

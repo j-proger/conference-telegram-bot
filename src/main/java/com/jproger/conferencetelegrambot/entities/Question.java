@@ -8,10 +8,7 @@ import lombok.experimental.Accessors;
 @Builder
 @Accessors(chain = true)
 public class Question {
-
-    @Getter @Setter
     private String question;
 
-    @Getter @Setter
     private Contact author;
 }
