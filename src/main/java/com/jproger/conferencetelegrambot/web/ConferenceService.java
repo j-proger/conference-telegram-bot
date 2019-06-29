@@ -23,12 +23,12 @@ public class ConferenceService {
 
         Contact contact = Contact.builder()
                 .name("Test Name")
-                .phone("Test Phone")
+                .phoneNumber("Test Phone")
                 .build();
 
         Question question = Question.builder()
                 .question("Question test")
-                .contact(contact)
+                .author(contact)
                 .build();
 
         contacts.put(sequence.incrementAndGet(), contact);

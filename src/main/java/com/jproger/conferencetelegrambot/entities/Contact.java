@@ -8,9 +8,9 @@ import lombok.experimental.Accessors;
 @Builder
 @Accessors(chain = true)
 public class Contact {
+
     private String name;
-
     private String phoneNumber;
-
     private String telegramID;
+
 }
