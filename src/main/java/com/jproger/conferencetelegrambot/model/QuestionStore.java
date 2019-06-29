@@ -5,33 +5,19 @@ import com.jproger.conferencetelegrambot.entities.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 @Service
 public class QuestionStore implements QuestionAPI {
 
-  private static volatile QuestionStore instance = null;
-
-  private List<Question> questions = null;
-
-  private QuestionStore() {
-    this.questions = new ArrayList<>();
-  }
-
-  public static QuestionStore getInstance() {
-    if (instance == null) {
-
-      synchronized(QuestionStore.class) {
-        if (instance == null) {
-          instance = new QuestionStore();
-        }
-      }
-    }
-    return instance;
-  }
+  private Set<Question> questions = Collections.synchronizedSet(new HashSet<>());
 
   @Override
-  public List<Question> getQuestions() {
+  public Set<Question> getQuestions() {
     return questions;
   }
 

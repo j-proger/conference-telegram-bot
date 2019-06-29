@@ -83,7 +83,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             requestContact(update);
         } else {
-            com.jproger.conferencetelegrambot.entities.Contact contact = contactAPI.getContctByTelegramID(user.getId().toString());
+            com.jproger.conferencetelegrambot.entities.Contact contact = contactAPI.getContactByTelegramID(user.getId().toString());
 
             userWorkflow.setTopicKey(topicKey);
 
@@ -163,7 +163,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Question question = Question.builder()
                 .question(questionText)
                 .topicKey(userWorkflow.getTopicKey())
-                .author(contactAPI.getContctByTelegramID(userId.toString()))
+                .author(contactAPI.getContactByTelegramID(userId.toString()))
                 .build();
 
         questionAPI.addQuestion(question);

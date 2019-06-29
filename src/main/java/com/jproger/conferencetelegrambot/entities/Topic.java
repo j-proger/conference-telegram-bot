@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Question {
-    private String question;
-    private Contact author;
-    private String topicKey;
+public class Topic {
+    private String key;
+    private String name;
 }

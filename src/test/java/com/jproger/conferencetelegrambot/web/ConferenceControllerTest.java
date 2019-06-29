@@ -19,13 +19,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 @ExtendWith({SpringExtension.class})
 @WebMvcTest({ConferenceController.class})
+@Import(TestConfig.class)
 class ConferenceControllerTest {
 
     @MockBean
@@ -38,12 +41,25 @@ class ConferenceControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    void should_return_topics() throws Exception { // @formatter:off
+        mockMvc
+            .perform(get("/topics"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.[*]", hasSize(2)))
+                .andExpect(jsonPath("$[*].key", containsInAnyOrder("TELEGRAM_BOT_IN_8_HOURS", "SPRING_BOOT_IN_PRODUCTION")))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("Телеграм-бот за 8 часов", "Spring-Boot на проде")));
+    } // @formatter:on
+
+    @Test
     void should_return_contacts() throws Exception { // @formatter:off
 
         // setup:
         when(contactApi.getContacts())
                 .thenReturn(
-                        Arrays.asList(
+                        new HashSet<>(
+                                Arrays.asList(
                                 Contact.builder()
                                         .name("Bruce Lee")
                                         .phoneNumber("+74951111111")
@@ -53,7 +69,7 @@ class ConferenceControllerTest {
                                         .name("Chuck Norris")
                                         .phoneNumber("+74959999999")
                                         .telegramID("chuck_norris")
-                                        .build()
+                                        .build())
                         )
                 );
 
@@ -74,7 +90,8 @@ class ConferenceControllerTest {
         // setup:
         when(questionApi.getQuestions())
                 .thenReturn(
-                        Arrays.asList(
+                        new HashSet<>(
+                                Arrays.asList(
                                 Question.builder()
                                         .question("Question from Bruce Lee.")
                                         .author(
@@ -84,6 +101,7 @@ class ConferenceControllerTest {
                                                         .telegramID("bruce_lee")
                                                         .build()
                                         )
+                                        .topicKey("TELEGRAM_BOT_IN_8_HOURS")
                                         .build(),
                                 Question.builder()
                                         .question("Question from Chuck Norris.")
@@ -94,8 +112,9 @@ class ConferenceControllerTest {
                                                         .telegramID("chuck_norris")
                                                         .build()
                                         )
+                                        .topicKey("SPRING_BOOT_IN_PRODUCTION")
                                         .build()
-                        )
+                        ))
                 );
 
         mockMvc
@@ -105,6 +124,7 @@ class ConferenceControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.[*]", hasSize(2)))
                 .andExpect(jsonPath("$[*].question", containsInAnyOrder("Question from Bruce Lee.", "Question from Chuck Norris.")))
+                .andExpect(jsonPath("$[*].topicKey", containsInAnyOrder("SPRING_BOOT_IN_PRODUCTION", "TELEGRAM_BOT_IN_8_HOURS")))
                 .andExpect(jsonPath("$[*].author.name", containsInAnyOrder("Bruce Lee", "Chuck Norris")))
                 .andExpect(jsonPath("$[*].author.phoneNumber", containsInAnyOrder("+74951111111", "+74959999999")))
                 .andExpect(jsonPath("$[*].author.telegramID", containsInAnyOrder("bruce_lee", "chuck_norris")));
