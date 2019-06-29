@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jproger.conferencetelegrambot.api.ContactAPI;
+import com.jproger.conferencetelegrambot.api.QuestionAPI;
 import com.jproger.conferencetelegrambot.entities.Contact;
 import com.jproger.conferencetelegrambot.entities.Question;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,10 @@ import java.util.Arrays;
 class ConferenceControllerTest {
 
     @MockBean
-    private ConferenceService service;
+    private ContactAPI contactApi;
+
+    @MockBean
+    private QuestionAPI questionApi;
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,7 +41,7 @@ class ConferenceControllerTest {
     void should_return_contacts() throws Exception { // @formatter:off
 
         // setup:
-        when(service.contacts())
+        when(contactApi.getContacts())
                 .thenReturn(
                         Arrays.asList(
                                 Contact.builder()
@@ -67,7 +72,7 @@ class ConferenceControllerTest {
     void should_return_questions() throws Exception { // @formatter:off
 
         // setup:
-        when(service.questions())
+        when(questionApi.getQuestions())
                 .thenReturn(
                         Arrays.asList(
                                 Question.builder()
