@@ -1,1 +1,1 @@
-Conference telegram bot
+Conference telegram bot and web app
