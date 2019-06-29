@@ -46,5 +46,10 @@ public class ContactStore implements ContactAPI {
     contacts.add(contact);
   }
 
+  @Override
+  public Contact getContctByTelegramID(String id) {
+    return contacts.stream().filter(a -> id.equals(a.getTelegramID())).findFirst().get();
+  }
+
 
 }

@@ -10,4 +10,6 @@ public interface ContactAPI {
   List<Contact> getContacts();
 
   void addContact(Contact contact);
+
+  Contact getContctByTelegramID(String id);
 }
