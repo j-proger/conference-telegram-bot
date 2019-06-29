@@ -1,5 +1,6 @@
 package com.jproger.conferencetelegrambot.telegram;
 
+import com.jproger.conferencetelegrambot.web.ConferenceService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -21,7 +22,7 @@ public class TelegramConfiguration {
     private static final ProxyType PROXY_TYPE = ProxyType.SOCKS5;
 
     @PostConstruct
-    public void initializeBot() throws TelegramApiRequestException {
+    public void initializeBot(ConferenceService conferenceService) throws TelegramApiRequestException {
         ApiContextInitializer.init();
 
         TelegramBotsApi botsApi = new TelegramBotsApi();
@@ -32,6 +33,6 @@ public class TelegramConfiguration {
         options.setProxyPort(PROXY_PORT);
         options.setProxyHost(PROXY_HOST);
 
-        botsApi.registerBot(new TelegramBot(BOT_NAME, BOT_TOKEN, options));
+        botsApi.registerBot(new TelegramBot(conferenceService, BOT_NAME, BOT_TOKEN, options));
     }
 }

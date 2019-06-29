@@ -1,8 +1,10 @@
 package com.jproger.conferencetelegrambot.telegram;
 
+import com.jproger.conferencetelegrambot.web.ConferenceService;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -14,15 +16,20 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.*;
 
 public class TelegramBot extends TelegramLongPollingBot {
+    private final ConferenceService conferenceService;
     private final String name;
     private final String token;
     private final Map<Integer, UserWorkflow> usersWorkflow = new HashMap<>();
 
-    public TelegramBot(String name, String token, DefaultBotOptions options) {
+    public TelegramBot(ConferenceService conferenceService,
+                       String name,
+                       String token,
+                       DefaultBotOptions options) {
         super(options);
 
         this.name = name;
         this.token = token;
+        this.conferenceService = conferenceService;
     }
 
     @Override
@@ -43,8 +50,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (Objects.nonNull(messageText) && messageText.toLowerCase().startsWith("/start")) {
             initUserWorkflow(update);
             requestContact(update);
-        } else if(message.hasContact()) {
+        } else if (message.hasContact()) {
+            createContact(update);
             updateWorkflowToQuestion(update);
+        } else {
+
         }
     }
 
@@ -86,6 +96,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             System.out.println("Request contact exception");
             e.printStackTrace();
         }
+    }
+
+    private void createContact(Update update) {
+        Integer userId = update.getMessage().getFrom().getId();
+        Long chatId = update.getMessage().getChatId();
+        UserWorkflow userWorkflow = usersWorkflow.get(userId);
+
+        Objects.requireNonNull(userWorkflow, "User workflow not found");
+
+        Contact tgContact = update.getMessage().getContact();
+
+        com.jproger.conferencetelegrambot.entities.Contact contact = com.jproger.conferencetelegrambot.entities.Contact.builder()
+                .name(String.join(" ", tgContact.getLastName(), tgContact.getFirstName()))
+                .phone(tgContact.getPhoneNumber())
+                .build();
+
+        conferenceService.addContact(contact);
     }
 
     private void updateWorkflowToQuestion(Update update) {
