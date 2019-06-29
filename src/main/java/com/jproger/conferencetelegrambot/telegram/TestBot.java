@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot;
+package com.jproger.conferencetelegrambot.telegram;
 
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
