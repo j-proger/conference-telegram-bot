@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TelegramBot extends TelegramLongPollingBot {
     private final ContactAPI contactAPI;
@@ -94,7 +96,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         message.setReplyMarkup(markup);
         message.setChatId(chatId);
-        message.setText("Get me your phone number please");
+        message.setText("Can I have your phone number please");
 
         try {
             execute(message);
@@ -111,9 +113,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         Objects.requireNonNull(userWorkflow, "User workflow not found");
 
         Contact tgContact = update.getMessage().getContact();
+        List<String> fullNameParts = Stream.of(tgContact.getLastName(), tgContact.getFirstName())
+                .filter(Objects::nonNull).collect(Collectors.toList());
 
         com.jproger.conferencetelegrambot.entities.Contact contact = com.jproger.conferencetelegrambot.entities.Contact.builder()
-                .name(String.join(" ", tgContact.getLastName(), tgContact.getFirstName()))
+                .name(String.join(" ", fullNameParts))
                 .phoneNumber(tgContact.getPhoneNumber())
                 .telegramID(userId.toString())
                 .build();
