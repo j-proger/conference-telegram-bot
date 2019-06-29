@@ -1,9 +1,11 @@
 package com.jproger.conferencetelegrambot.entities;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
+@Accessors(chain = true)
 public class Contact {
 
     @Getter @Setter

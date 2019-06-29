@@ -32,6 +32,6 @@ public class TelegramConfiguration {
         options.setProxyPort(PROXY_PORT);
         options.setProxyHost(PROXY_HOST);
 
-        botsApi.registerBot(new TestBot(options));
+        botsApi.registerBot(new TelegramBot(BOT_NAME, BOT_TOKEN, options));
     }
 }
