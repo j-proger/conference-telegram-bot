@@ -59,7 +59,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             createContact(update);
             updateWorkflowToQuestion(update);
         } else {
-
+            createQuestion(update);
         }
     }
 
@@ -105,7 +105,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void createContact(Update update) {
         Integer userId = update.getMessage().getFrom().getId();
-        Long chatId = update.getMessage().getChatId();
         UserWorkflow userWorkflow = usersWorkflow.get(userId);
 
         Objects.requireNonNull(userWorkflow, "User workflow not found");
@@ -114,10 +113,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         com.jproger.conferencetelegrambot.entities.Contact contact = com.jproger.conferencetelegrambot.entities.Contact.builder()
                 .name(String.join(" ", tgContact.getLastName(), tgContact.getFirstName()))
-                .phone(tgContact.getPhoneNumber())
+                .phoneNumber(tgContact.getPhoneNumber())
+                .telegramID(userId.toString())
                 .build();
 
-        conferenceService.addContact(contact);
+        contactAPI.addContact(contact);
     }
 
     private void updateWorkflowToQuestion(Update update) {
@@ -131,11 +131,34 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage(chatId, "Congratulations, now you can ask questions! Each your message will be make a question.");
     }
 
+    private void createQuestion(Update update) {
+        Long chatId = update.getMessage().getChatId();
+        Integer userId = update.getMessage().getFrom().getId();
+        String questionText = update.getMessage().getText();
+
+        UserWorkflow userWorkflow = usersWorkflow.get(userId);
+
+        Objects.requireNonNull(userWorkflow, "User workflow not found");
+
+        if (userWorkflow.getState() != UserWorkflow.State.ASK_QUESTION)
+            throw new IllegalStateException("User can't ask questions");
+
+        Question question = Question.builder()
+                .question(questionText)
+                .author(contactAPI.getContctByTelegramID(userId.toString()))
+                .build();
+
+        questionAPI.addQuestion(question);
+
+        sendMessage(chatId, "Your question registered. You can make new questions.");
+    }
+
     private void sendMessage(Long chatId, String text) {
         SendMessage message = new SendMessage();
 
         message.setText(text);
         message.setChatId(chatId);
+        message.setReplyMarkup(null);
 
         try {
             execute(message);
