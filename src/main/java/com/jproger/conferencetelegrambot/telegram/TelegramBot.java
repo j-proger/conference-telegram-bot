@@ -57,7 +57,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if (Objects.nonNull(messageText) && messageText.toLowerCase().startsWith("/start")) {
             initUserWorkflow(update);
-            requestContact(update);
         } else if (message.hasContact()) {
             createContact(update);
             updateWorkflowToQuestion(update);
@@ -69,14 +68,27 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void initUserWorkflow(Update update) {
         Long chatId = update.getMessage().getChatId();
         User user = update.getMessage().getFrom();
+        UserWorkflow userWorkflow = usersWorkflow.get(user.getId());
+        String topicKey = update.getMessage().getText().split(" ")[1];
 
-        UserWorkflow userWorkflow = UserWorkflow.builder()
-                .id(user.getId())
-                .chatId(chatId)
-                .state(UserWorkflow.State.SHARE_CONTACT)
-                .build();
+        if (Objects.isNull(userWorkflow)) {
+            userWorkflow = UserWorkflow.builder()
+                    .id(user.getId())
+                    .chatId(chatId)
+                    .state(UserWorkflow.State.SHARE_CONTACT)
+                    .topicKey(topicKey)
+                    .build();
 
-        usersWorkflow.put(user.getId(), userWorkflow);
+            usersWorkflow.put(user.getId(), userWorkflow);
+
+            requestContact(update);
+        } else {
+            com.jproger.conferencetelegrambot.entities.Contact contact = contactAPI.getContctByTelegramID(user.getId().toString());
+
+            userWorkflow.setTopicKey(topicKey);
+
+            sendMessage(chatId, "Hello " + contact.getName() + "!");
+        }
     }
 
     private void requestContact(Update update) {
@@ -150,6 +162,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         Question question = Question.builder()
                 .question(questionText)
+                .topicKey(userWorkflow.getTopicKey())
                 .author(contactAPI.getContctByTelegramID(userId.toString()))
                 .build();
 

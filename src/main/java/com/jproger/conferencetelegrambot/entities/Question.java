@@ -11,4 +11,6 @@ public class Question {
     private String question;
 
     private Contact author;
+
+    private String topicKey;
 }

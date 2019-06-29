@@ -14,4 +14,5 @@ public class UserWorkflow {
     private Integer id;
     private Long chatId;
     private State state;
+    private String topicKey;
 }
