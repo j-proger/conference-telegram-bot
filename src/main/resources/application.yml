@@ -1,0 +1,8 @@
+channels:
+  telegram:
+    bot:
+      name: "ConferenceRequesterBot"
+      token: "868656591:AAEN_gOc2GQa4zo5Gp4KWPq1Rt_XgZBuSgY"
+      proxyHost: "127.0.0.1"
+      proxyPort: 9150
+      proxyType: SOCKS5
