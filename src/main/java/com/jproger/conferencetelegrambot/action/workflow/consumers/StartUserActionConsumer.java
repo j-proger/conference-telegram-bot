@@ -4,6 +4,7 @@ import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
+import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
 import com.jproger.conferencetelegrambot.action.workflow.UserStateService;
@@ -46,16 +47,6 @@ public class StartUserActionConsumer implements ActionConsumer {
         }
     }
 
-    private UserState createUserState(StartUserAction action) {
-        Optional<UserState> userState = userStateService.createUserState(action.getChannel(), action.getUserId());
-
-        userState.ifPresent(
-                state -> sendMessage(action.getChannel(), action.getUserId(), "Hello, my dear friend. Before ask your questions, can I have your phone number please?")
-        );
-
-        return userState.orElse(null);
-    }
-
     private void updateSelectedTopic(StartUserAction action, UserState userState) {
         userStateService.updateSelectedTopic(userState.getId(), action.getTopic())
                 .ifPresent(state -> {
@@ -63,6 +54,28 @@ public class StartUserActionConsumer implements ActionConsumer {
 
                     sendMessage(action.getChannel(), action.getUserId(), message);
                 });
+    }
+
+    private UserState createUserState(StartUserAction action) {
+        Optional<UserState> userState = userStateService.createUserState(action.getChannel(), action.getUserId());
+
+        userState.ifPresent(
+                state -> greetUser(action.getChannel(), action.getUserId())
+        );
+
+        return userState.orElse(null);
+    }
+
+    private void greetUser(ChannelType channel, String userId) {
+        sendMessage(channel, userId, "Hello, my dear friend.");
+
+        requestContactInfo(channel, userId);
+    }
+
+    private void requestContactInfo(ChannelType channel, String userId) {
+        RequestContactSystemAction action = new RequestContactSystemAction(channel, userId, "Can I have your phone number, please?");
+
+        actionBus.sendAction(action);
     }
 
     private void sendMessage(ChannelType channelType, String userId, String message) {
