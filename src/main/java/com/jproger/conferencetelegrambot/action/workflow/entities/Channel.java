@@ -6,14 +6,14 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserChannel {
-    private ChannelType channelType;
+public class Channel {
+    private ChannelType type;
     private String userId;
 
-    public UserChannel copy() {
-        return UserChannel.builder()
+    public Channel copy() {
+        return Channel.builder()
                 .userId(userId)
-                .channelType(channelType)
+                .type(type)
                 .build();
     }
 }

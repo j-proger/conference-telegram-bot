@@ -1,6 +1,6 @@
 package com.jproger.conferencetelegrambot.action.workflow.dto;
 
-import com.jproger.conferencetelegrambot.action.workflow.entities.UserState.Status;
+import com.jproger.conferencetelegrambot.action.workflow.entities.WorkflowState.Status;
 import lombok.Builder;
 import lombok.Data;
 

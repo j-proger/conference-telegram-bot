@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class UserState {
+public class WorkflowState {
     public enum Status {
         NEW,
         REGISTERED
@@ -23,15 +23,15 @@ public class UserState {
      */
     private Long externalId;
     private Status status;
-    private List<UserChannel> userChannels;
+    private List<Channel> channels;
 
     /**
      * Выбранный доклад
      */
     private String selectedTopic;
 
-    public UserState copy() {
-        return UserState.builder()
+    public WorkflowState copy() {
+        return WorkflowState.builder()
                 .id(id)
                 .externalId(externalId)
                 .status(status)
@@ -40,9 +40,9 @@ public class UserState {
                 .build();
     }
 
-    private List<UserChannel> copyChannels() {
-        return userChannels.stream()
-                .map(UserChannel::copy)
+    private List<Channel> copyChannels() {
+        return channels.stream()
+                .map(Channel::copy)
                 .collect(Collectors.toList());
     }
 }

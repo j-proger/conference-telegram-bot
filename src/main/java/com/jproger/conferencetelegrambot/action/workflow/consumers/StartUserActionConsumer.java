@@ -7,8 +7,8 @@ import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
-import com.jproger.conferencetelegrambot.action.workflow.UserStateService;
-import com.jproger.conferencetelegrambot.action.workflow.entities.UserState;
+import com.jproger.conferencetelegrambot.action.workflow.WorkflowStateService;
+import com.jproger.conferencetelegrambot.action.workflow.entities.WorkflowState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StartUserActionConsumer implements ActionConsumer {
     private final ActionBus actionBus;
-    private final UserStateService userStateService;
+    private final WorkflowStateService workflowStateService;
 
     @PostConstruct
     public void registerInBus() {
@@ -39,16 +39,16 @@ public class StartUserActionConsumer implements ActionConsumer {
     public void accept(Action a) {
         StartUserAction action = (StartUserAction) a;
 
-        UserState userState = userStateService.findUserState(action.getChannel(), action.getUserId())
+        WorkflowState workflowState = workflowStateService.findUserState(action.getChannel(), action.getUserId())
                 .orElseGet(() -> this.createUserState(action));
 
-        if (Objects.nonNull(userState) && StringUtils.isNotBlank(action.getTopic())) {
-            updateSelectedTopic(action, userState);
+        if (Objects.nonNull(workflowState) && StringUtils.isNotBlank(action.getTopic())) {
+            updateSelectedTopic(action, workflowState);
         }
     }
 
-    private void updateSelectedTopic(StartUserAction action, UserState userState) {
-        userStateService.updateSelectedTopic(userState.getId(), action.getTopic())
+    private void updateSelectedTopic(StartUserAction action, WorkflowState workflowState) {
+        workflowStateService.updateSelectedTopic(workflowState.getId(), action.getTopic())
                 .ifPresent(state -> {
                     String message = String.format("You selected '%s' topic", action.getTopic());
 
@@ -56,8 +56,8 @@ public class StartUserActionConsumer implements ActionConsumer {
                 });
     }
 
-    private UserState createUserState(StartUserAction action) {
-        Optional<UserState> userState = userStateService.createUserState(action.getChannel(), action.getUserId());
+    private WorkflowState createUserState(StartUserAction action) {
+        Optional<WorkflowState> userState = workflowStateService.createUserState(action.getChannel(), action.getUserId());
 
         userState.ifPresent(
                 state -> greetUser(action.getChannel(), action.getUserId())
