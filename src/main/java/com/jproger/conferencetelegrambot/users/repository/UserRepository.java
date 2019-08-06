@@ -3,6 +3,7 @@ package com.jproger.conferencetelegrambot.users.repository;
 import com.jproger.conferencetelegrambot.users.entities.User;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -14,12 +15,14 @@ public class UserRepository {
 
     private Map<Long, User> users = new HashMap<>();
 
-    public User save(User user) {
-        if(Objects.isNull(user.getId())) {
+    public User save(@Nonnull User user) {
+        if (Objects.isNull(user.getId())) {
             user.setId(nextId());
         }
 
-        return users.put(user.getId(), user);
+        users.put(user.getId(), user);
+
+        return users.get(user.getId());
     }
 
     public Optional<User> findById(Long id) {

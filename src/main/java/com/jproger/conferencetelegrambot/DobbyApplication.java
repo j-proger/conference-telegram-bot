@@ -11,3 +11,5 @@ public class DobbyApplication {
 	}
 
 }
+
+//TODO: Удалить middle name из сущности user

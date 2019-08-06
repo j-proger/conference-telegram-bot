@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.action.channel.telegram;
+package com.jproger.conferencetelegrambot.channels.telegram;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action;
@@ -80,7 +80,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         String userId = message.getFrom().getId().toString();
         String phoneNumber = message.getContact().getPhoneNumber();
+        String lastName = message.getFrom().getLastName();
+        String firstName = message.getFrom().getFirstName();
+        String middleName = "";
 
-        return new ShareContactUserAction(ChannelType.TELEGRAM, userId, phoneNumber);
+        return new ShareContactUserAction(ChannelType.TELEGRAM, userId, lastName, firstName, middleName, phoneNumber);
     }
 }

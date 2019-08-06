@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.action.workflow.consumers;
+package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
@@ -7,23 +7,21 @@ import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
-import com.jproger.conferencetelegrambot.action.workflow.WorkflowStateService;
-import com.jproger.conferencetelegrambot.action.workflow.entities.WorkflowState;
+import com.jproger.conferencetelegrambot.workflow.UserStateService;
+import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class StartUserActionConsumer implements ActionConsumer {
     private final ActionBus actionBus;
-    private final WorkflowStateService workflowStateService;
+    private final UserStateService userStateService;
 
     @PostConstruct
     public void registerInBus() {
@@ -39,37 +37,34 @@ public class StartUserActionConsumer implements ActionConsumer {
     public void accept(Action a) {
         StartUserAction action = (StartUserAction) a;
 
-        WorkflowState workflowState = workflowStateService.findUserState(action.getChannel(), action.getUserId())
+        userStateService.getUserStateByChannelAndChannelUserId(action.getChannel(), action.getChannelUserId())
                 .orElseGet(() -> this.createUserState(action));
 
-        if (Objects.nonNull(workflowState) && StringUtils.isNotBlank(action.getTopic())) {
-            updateSelectedTopic(action, workflowState);
+        if (StringUtils.isNotBlank(action.getTopic())) {
+            updateTopicKey(action);
         }
     }
 
-    private void updateSelectedTopic(StartUserAction action, WorkflowState workflowState) {
-        workflowStateService.updateSelectedTopic(workflowState.getId(), action.getTopic())
-                .ifPresent(state -> {
-                    String message = String.format("You selected '%s' topic", action.getTopic());
+    private void updateTopicKey(StartUserAction action) {
+        userStateService.updateTopicKey(action.getChannel(), action.getChannelUserId(), action.getTopic());
 
-                    sendMessage(action.getChannel(), action.getUserId(), message);
-                });
+        String message = String.format("You selected '%s' topic", action.getTopic());
+
+        sendMessage(action.getChannel(), action.getChannelUserId(), message);
     }
 
-    private WorkflowState createUserState(StartUserAction action) {
-        Optional<WorkflowState> userState = workflowStateService.createUserState(action.getChannel(), action.getUserId());
+    private UserStateDto createUserState(StartUserAction action) {
+        UserStateDto userState = userStateService.createUserState(action.getChannel(), action.getChannelUserId());
 
-        userState.ifPresent(
-                state -> greetUser(action.getChannel(), action.getUserId())
-        );
+        greetUser(action.getChannel(), action.getChannelUserId());
 
-        return userState.orElse(null);
+        requestContactInfo(action.getChannel(), action.getChannelUserId());
+
+        return userState;
     }
 
     private void greetUser(ChannelType channel, String userId) {
         sendMessage(channel, userId, "Hello, my dear friend.");
-
-        requestContactInfo(channel, userId);
     }
 
     private void requestContactInfo(ChannelType channel, String userId) {

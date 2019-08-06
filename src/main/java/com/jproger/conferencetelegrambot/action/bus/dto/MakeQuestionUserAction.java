@@ -6,8 +6,8 @@ import lombok.Getter;
 public class MakeQuestionUserAction extends UserAction {
     private String question;
 
-    public MakeQuestionUserAction(ChannelType channel, String userId, String question) {
-        super(channel, userId);
+    public MakeQuestionUserAction(ChannelType channel, String externalUserId, String question) {
+        super(channel, externalUserId);
         this.question = question;
     }
 }

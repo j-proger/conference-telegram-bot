@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.action.channel.telegram;
+package com.jproger.conferencetelegrambot.channels.telegram;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.action.channel.telegram;
+package com.jproger.conferencetelegrambot.channels.telegram;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
-package com.jproger.conferencetelegrambot.action.workflow.consumers;
+package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
-import com.jproger.conferencetelegrambot.action.channel.telegram.TelegramBot;
+import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class SendTextMessageSystemActionConsumer implements ActionConsumer {
 
         switch (action.getChannel()) {
             case TELEGRAM:
-                sendTextMessageToTelegramBot(action.getRecipientId(), action.getMessage());
+                sendTextMessageToTelegramBot(action.getChannelUserId(), action.getMessage());
                 break;
         }
     }

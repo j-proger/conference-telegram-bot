@@ -4,10 +4,7 @@ import lombok.Getter;
 
 @Getter
 public abstract class SystemAction extends Action {
-    private String recipientId;
-
-    public SystemAction(ChannelType channel, String recipientId) {
-        super(channel);
-        this.recipientId = recipientId;
+    public SystemAction(ChannelType channel, String channelUserId) {
+        super(channel, channelUserId);
     }
 }

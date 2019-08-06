@@ -11,4 +11,5 @@ public abstract class Action {
     }
 
     private ChannelType channel;
+    private String channelUserId;
 }

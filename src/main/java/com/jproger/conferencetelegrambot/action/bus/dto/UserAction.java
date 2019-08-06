@@ -4,10 +4,7 @@ import lombok.Getter;
 
 @Getter
 public abstract class UserAction extends Action {
-    private String userId;
-
-    public UserAction(ChannelType channel, String userId) {
-        super(channel);
-        this.userId = userId;
+    public UserAction(ChannelType channel, String channelUserId) {
+        super(channel, channelUserId);
     }
 }
