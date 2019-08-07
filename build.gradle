@@ -20,11 +20,10 @@ repositories {
 }
 
 dependencies {
-	implementation ('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'junit', module: 'junit'
-        exclude group: 'org.hamcrest', module: 'hamcrest-library'
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.h2database:h2'
+
 	implementation 'org.telegram:telegrambots:4.3.1'
 	implementation 'org.projectlombok:lombok'
 	implementation 'org.apache.commons:commons-lang3:3.9'

@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.users.entities;
+package com.jproger.conferencetelegrambot.topics.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,16 +12,15 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String lastName;
+    @ManyToOne
+    private Topic topic;
 
-    private String firstName;
+    private Long userId;
 
-    private String middleName;
-
-    private String phoneNumber;
+    private String description;
 }
