@@ -61,5 +61,7 @@ public class MakeQuestionUserActionConsumer extends BaseActionConsumer<MakeQuest
     private void createQuestion(UserStateDto userState, UserDto user, String question) {
         topicService.createQuestion(user.getId(), userState.getTopicKey(), question)
                 .orElseThrow(() -> new UserActionException("Something went wrong. Probably you didn't select a topic."));
+
+        sendTextMessageToUser(userState.getChannel(), userState.getChannelUserId(), "Your question was registered. Thank you.");
     }
 }

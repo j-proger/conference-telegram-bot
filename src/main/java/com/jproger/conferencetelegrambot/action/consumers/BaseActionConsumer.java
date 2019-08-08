@@ -3,6 +3,7 @@ package com.jproger.conferencetelegrambot.action.consumers;
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action;
+import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.action.consumers.exceptions.UserActionException;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,16 @@ public abstract class BaseActionConsumer<T extends Action> implements ActionCons
         try {
             acceptTAction((T) action);
         } catch (UserActionException ex) {
-            sendErrorMessageToUser(action, ex.getMessage());
+            sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), ex.getMessage());
         } catch (Throwable ex) {
-            sendErrorMessageToUser(action, COMMON_ERROR_TEXT);
+            sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), COMMON_ERROR_TEXT);
         }
     }
 
     protected abstract void acceptTAction(T action);
 
-    private void sendErrorMessageToUser(Action action, String text) {
-        SendTextMessageSystemAction message = new SendTextMessageSystemAction(action.getChannel(), action.getChannelUserId(), text);
+    protected void sendTextMessageToUser(ChannelType channel, String channelUserId, String text) {
+        SendTextMessageSystemAction message = new SendTextMessageSystemAction(channel, channelUserId, text);
 
         actionBus.sendAction(message);
     }
