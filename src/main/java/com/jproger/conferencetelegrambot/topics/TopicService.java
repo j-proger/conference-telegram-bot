@@ -1,6 +1,7 @@
 package com.jproger.conferencetelegrambot.topics;
 
 import com.jproger.conferencetelegrambot.topics.dto.QuestionDto;
+import com.jproger.conferencetelegrambot.topics.dto.TopicDto;
 import com.jproger.conferencetelegrambot.topics.entities.Question;
 import com.jproger.conferencetelegrambot.topics.entities.Topic;
 import com.jproger.conferencetelegrambot.topics.mappers.QuestionMapper;
@@ -34,5 +35,10 @@ public class TopicService {
                         .description(description)
                         .build()
         );
+    }
+
+    public Optional<TopicDto> getTopicByKey(String topicKey) {
+        return topicRepository.findByKey(topicKey)
+                .map(topicMapper::toTopicDtoMap);
     }
 }
