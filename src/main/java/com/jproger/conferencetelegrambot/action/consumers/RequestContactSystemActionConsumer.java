@@ -1,11 +1,8 @@
 package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
-import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,32 +11,23 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class RequestContactSystemActionConsumer implements ActionConsumer {
-    private final ActionBus actionBus;
+public class RequestContactSystemActionConsumer extends BaseActionConsumer<RequestContactSystemAction> {
     private final TelegramBot telegramBot;
 
-    @PostConstruct
-    public void registerInBus() {
-        actionBus.registerConsumer(this);
+    public RequestContactSystemActionConsumer(ActionBus actionBus, TelegramBot telegramBot) {
+        super(RequestContactSystemAction.class, actionBus);
+
+        this.telegramBot = telegramBot;
     }
 
     @Override
-    public Class<? extends Action> getActionClass() {
-        return RequestContactSystemAction.class;
-    }
-
-    @Override
-    public void accept(Action a) {
-        RequestContactSystemAction action = (RequestContactSystemAction) a;
-
-        switch (action.getChannel()){
+    public void acceptTAction(RequestContactSystemAction action) {
+        switch (action.getChannel()) {
             case TELEGRAM:
                 sendRequestContactMessageToTelegramChannel(action.getChannelUserId(), action.getMessage());
                 break;

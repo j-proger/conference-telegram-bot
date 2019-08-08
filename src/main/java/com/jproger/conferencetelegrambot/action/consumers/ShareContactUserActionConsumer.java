@@ -1,42 +1,30 @@
 package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
-import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.FinishRequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.ShareContactUserAction;
 import com.jproger.conferencetelegrambot.users.UserService;
 import com.jproger.conferencetelegrambot.users.dto.UserDto;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class ShareContactUserActionConsumer implements ActionConsumer {
-    private final ActionBus actionBus;
+public class ShareContactUserActionConsumer extends BaseActionConsumer<ShareContactUserAction> {
     private final UserService userService;
     private final UserStateService userStateService;
 
-    @PostConstruct
-    public void registerInBus() {
-        actionBus.registerConsumer(this);
+    public ShareContactUserActionConsumer(ActionBus actionBus, UserService userService, UserStateService userStateService) {
+        super(ShareContactUserAction.class, actionBus);
+
+        this.userService = userService;
+        this.userStateService = userStateService;
     }
 
     @Override
-    public Class<? extends Action> getActionClass() {
-        return ShareContactUserAction.class;
-    }
-
-    @Override
-    public void accept(Action a) {
-        ShareContactUserAction action = (ShareContactUserAction) a;
-
+    public void acceptTAction(ShareContactUserAction action) {
         UserDto user = createContact(action.getFirstName(), action.getLastName(), action.getMiddleName(), action.getPhoneNumber());
 
         updateInnerUserIdInState(action.getChannel(), action.getChannelUserId(), user.getId());

@@ -1,42 +1,29 @@
 package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
-import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class StartUserActionConsumer implements ActionConsumer {
-    private final ActionBus actionBus;
+public class StartUserActionConsumer extends BaseActionConsumer<StartUserAction> {
     private final UserStateService userStateService;
 
-    @PostConstruct
-    public void registerInBus() {
-        actionBus.registerConsumer(this);
+    public StartUserActionConsumer(ActionBus actionBus, UserStateService userStateService) {
+        super(StartUserAction.class, actionBus);
+
+        this.userStateService = userStateService;
     }
 
     @Override
-    public Class<? extends Action> getActionClass() {
-        return StartUserAction.class;
-    }
-
-    @Override
-    public void accept(Action a) {
-        StartUserAction action = (StartUserAction) a;
-
+    public void acceptTAction(StartUserAction action) {
         userStateService.getUserStateByChannelAndChannelUserId(action.getChannel(), action.getChannelUserId())
                 .orElseGet(() -> this.createUserState(action));
 

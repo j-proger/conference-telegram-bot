@@ -1,40 +1,27 @@
 package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
-import com.jproger.conferencetelegrambot.action.bus.dto.Action;
 import com.jproger.conferencetelegrambot.action.bus.dto.FinishRequestContactSystemAction;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
-import javax.annotation.PostConstruct;
-
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class FinishRequestContactSystemActionConsumer implements ActionConsumer {
-    private final ActionBus actionBus;
+public class FinishRequestContactSystemActionConsumer extends BaseActionConsumer<FinishRequestContactSystemAction> {
     private final TelegramBot telegramBot;
 
-    @PostConstruct
-    public void registerInBus() {
-        actionBus.registerConsumer(this);
+    public FinishRequestContactSystemActionConsumer(ActionBus actionBus, TelegramBot telegramBot) {
+        super(FinishRequestContactSystemAction.class, actionBus);
+
+        this.telegramBot = telegramBot;
     }
 
     @Override
-    public Class<? extends Action> getActionClass() {
-        return FinishRequestContactSystemAction.class;
-    }
-
-    @Override
-    public void accept(Action a) {
-        FinishRequestContactSystemAction action = (FinishRequestContactSystemAction) a;
-
+    public void acceptTAction(FinishRequestContactSystemAction action) {
         switch (action.getChannel()) {
             case TELEGRAM:
                 sendThanksgivingMessageToTelegramChannel(action.getChannelUserId(), action.getMessage());

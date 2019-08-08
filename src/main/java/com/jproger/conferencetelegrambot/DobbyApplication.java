@@ -12,6 +12,6 @@ public class DobbyApplication {
 
 }
 
-//TODO: Удалить middle name из сущности user
-//TODO: Вынести общий функционал в базовый класс у консамеров
 //TODO: Доделать обработку action на создание вопроса
+//TODO: Удалить middle name из сущности user
+//TODO: Прикрутить embedded message queue
