@@ -12,6 +12,5 @@ public class DobbyApplication {
 
 }
 
-//TODO: Доделать обработку action на создание вопроса
 //TODO: Удалить middle name из сущности user
 //TODO: Прикрутить embedded message queue

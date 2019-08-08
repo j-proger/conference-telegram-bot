@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +27,10 @@ public class UserService {
         User user = userRepository.save(newUser);
 
         return userMapper.toUserDtoMap(user);
+    }
+
+    public Optional<UserDto> getUserById(long userId) {
+        return userRepository.findById(userId)
+                .map(userMapper::toUserDtoMap);
     }
 }
