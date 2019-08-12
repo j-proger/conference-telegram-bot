@@ -12,6 +12,7 @@ public class DobbyApplication {
 
 }
 
-//TODO: Удалить middle name из сущности user
-//TODO: Прикрутить embedded message queue
+//TODO: Remove middle name from user entity
+//TODO: Add embedded message queue
 //TODO: Put away text messages for users to message source
+//TODO: Autotests
