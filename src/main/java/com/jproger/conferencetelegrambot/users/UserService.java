@@ -1,7 +1,7 @@
 package com.jproger.conferencetelegrambot.users;
 
-import com.jproger.conferencetelegrambot.users.dto.PageRequestDto;
-import com.jproger.conferencetelegrambot.users.dto.PageResponseDto;
+import com.jproger.conferencetelegrambot.common.dto.PageRequestDto;
+import com.jproger.conferencetelegrambot.common.dto.PageResponseDto;
 import com.jproger.conferencetelegrambot.users.dto.UserDto;
 import com.jproger.conferencetelegrambot.users.entities.User;
 import com.jproger.conferencetelegrambot.users.mappers.UserMapper;
@@ -37,16 +37,10 @@ public class UserService {
     }
 
     public PageResponseDto<UserDto> getUsers(@Valid PageRequestDto page) {
-        Page<User> users = userRepository.findAll(PageRequest.of(page.getPage(), page.getSize()));
+        Page<UserDto> users = userRepository.findAll(PageRequest.of(page.getPage(), page.getSize()))
+                .map(userMapper::toUserDtoMap);
 
-        return PageResponseDto.<UserDto>builder()
-                .totalElements(users.getTotalElements())
-                .totalPages(users.getTotalPages())
-                .currentPage(users.getNumber())
-                .elements(
-                        userMapper.toUserDtoMap(users.getContent())
-                )
-                .build();
+        return PageResponseDto.of(users);
     }
 
     public Optional<UserDto> getUserById(long userId) {

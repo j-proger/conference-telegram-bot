@@ -1,5 +1,6 @@
 package com.jproger.conferencetelegrambot.topics.dto;
 
+import com.jproger.conferencetelegrambot.users.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,6 @@ import lombok.Data;
 public class QuestionDto {
     private Long id;
     private Long topicId;
-    private Long userId;
+    private UserDto user;
     private String description;
 }

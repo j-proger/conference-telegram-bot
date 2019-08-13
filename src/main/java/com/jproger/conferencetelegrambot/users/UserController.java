@@ -1,7 +1,7 @@
 package com.jproger.conferencetelegrambot.users;
 
-import com.jproger.conferencetelegrambot.users.dto.PageRequestDto;
-import com.jproger.conferencetelegrambot.users.dto.PageResponseDto;
+import com.jproger.conferencetelegrambot.common.dto.PageRequestDto;
+import com.jproger.conferencetelegrambot.common.dto.PageResponseDto;
 import com.jproger.conferencetelegrambot.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.users.dto;
+package com.jproger.conferencetelegrambot.common.dto;
 
 import lombok.Data;
 
