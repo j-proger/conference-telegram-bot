@@ -1,11 +1,14 @@
 channels:
   telegram:
     bot:
+      enabled: false
       name: "ConferenceRequesterBot"
       token: "868656591:AAEN_gOc2GQa4zo5Gp4KWPq1Rt_XgZBuSgY"
-      proxyHost: "127.0.0.1"
-      proxyPort: 9150
-      proxyType: SOCKS5
+      proxy:
+        enabled: true
+        host: "127.0.0.1"
+        port: 9150
+        type: SOCKS5
 
 spring:
   jpa:

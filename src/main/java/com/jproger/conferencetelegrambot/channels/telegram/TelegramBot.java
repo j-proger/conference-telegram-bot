@@ -6,7 +6,6 @@ import com.jproger.conferencetelegrambot.action.bus.dto.MakeQuestionUserAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.ShareContactUserAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -17,7 +16,6 @@ import java.util.Optional;
 
 import static com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType.TELEGRAM;
 
-@Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final ActionBus actionBus;
     private final TelegramBotProperties telegramBotProperties;
