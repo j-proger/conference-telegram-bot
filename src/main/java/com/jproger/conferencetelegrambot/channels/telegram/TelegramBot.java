@@ -2,9 +2,9 @@ package com.jproger.conferencetelegrambot.channels.telegram;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action;
-import com.jproger.conferencetelegrambot.action.bus.dto.MakeQuestionUserAction;
+import com.jproger.conferencetelegrambot.action.bus.dto.DefaultUserAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.ShareContactUserAction;
-import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
+import com.jproger.conferencetelegrambot.action.bus.dto.InitWorkflowUserAction;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -79,7 +79,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 .filter(StringUtils::isNoneBlank)   // фильтруем от пустых строк
                 .findFirst().orElse(null);
 
-        return new StartUserAction(TELEGRAM, channelUserId, topic);
+        return new InitWorkflowUserAction(TELEGRAM, channelUserId, topic);
     }
 
     private Action createShareContactUserAction(Update update) {
@@ -98,6 +98,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         String channelUserId = message.getChatId().toString();
         String text = message.getText();
 
-        return new MakeQuestionUserAction(TELEGRAM, channelUserId, text);
+        return new DefaultUserAction(TELEGRAM, channelUserId, text);
     }
 }

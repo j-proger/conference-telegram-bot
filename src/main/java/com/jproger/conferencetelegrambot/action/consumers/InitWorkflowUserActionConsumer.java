@@ -4,7 +4,7 @@ import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
-import com.jproger.conferencetelegrambot.action.bus.dto.StartUserAction;
+import com.jproger.conferencetelegrambot.action.bus.dto.InitWorkflowUserAction;
 import com.jproger.conferencetelegrambot.action.consumers.exceptions.UserActionException;
 import com.jproger.conferencetelegrambot.topics.TopicService;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
@@ -15,21 +15,21 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class StartUserActionConsumer extends BaseActionConsumer<StartUserAction> {
+public class InitWorkflowUserActionConsumer extends BaseActionConsumer<InitWorkflowUserAction> {
     private final UserStateService userStateService;
     private final TopicService topicService;
 
-    public StartUserActionConsumer(ActionBus actionBus,
-                                   UserStateService userStateService,
-                                   TopicService topicService) {
-        super(StartUserAction.class, actionBus);
+    public InitWorkflowUserActionConsumer(ActionBus actionBus,
+                                          UserStateService userStateService,
+                                          TopicService topicService) {
+        super(InitWorkflowUserAction.class, actionBus);
 
         this.userStateService = userStateService;
         this.topicService = topicService;
     }
 
     @Override
-    public void acceptTAction(StartUserAction action) {
+    public void acceptTAction(InitWorkflowUserAction action) {
         userStateService.getUserStateByChannelAndChannelUserId(action.getChannel(), action.getChannelUserId())
                 .orElseGet(() -> this.createUserState(action));
 
@@ -46,7 +46,7 @@ public class StartUserActionConsumer extends BaseActionConsumer<StartUserAction>
         return topicService.getTopicByKey(topicKey).isPresent();
     }
 
-    private void updateTopicKey(StartUserAction action) {
+    private void updateTopicKey(InitWorkflowUserAction action) {
         userStateService.updateTopicKey(action.getChannel(), action.getChannelUserId(), action.getTopic());
 
         String message = String.format("You selected '%s' topic", action.getTopic());
@@ -54,7 +54,7 @@ public class StartUserActionConsumer extends BaseActionConsumer<StartUserAction>
         sendMessage(action.getChannel(), action.getChannelUserId(), message);
     }
 
-    private UserStateDto createUserState(StartUserAction action) {
+    private UserStateDto createUserState(InitWorkflowUserAction action) {
         UserStateDto userState = userStateService.createUserState(action.getChannel(), action.getChannelUserId());
 
         greetUser(action.getChannel(), action.getChannelUserId());

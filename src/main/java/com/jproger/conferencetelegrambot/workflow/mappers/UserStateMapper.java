@@ -10,6 +10,7 @@ public class UserStateMapper {
         return UserStateDto.builder()
                 .channel(state.getChannel())
                 .channelUserId(state.getChannelUserId())
+                .status(state.getStatus())
                 .innerUserId(state.getInnerUserId())
                 .topicKey(state.getTopicKey())
                 .build();

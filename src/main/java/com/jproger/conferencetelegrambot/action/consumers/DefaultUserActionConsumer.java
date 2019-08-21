@@ -2,7 +2,7 @@ package com.jproger.conferencetelegrambot.action.consumers;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
-import com.jproger.conferencetelegrambot.action.bus.dto.MakeQuestionUserAction;
+import com.jproger.conferencetelegrambot.action.bus.dto.DefaultUserAction;
 import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
 import com.jproger.conferencetelegrambot.action.consumers.exceptions.UserActionException;
 import com.jproger.conferencetelegrambot.topics.TopicService;
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class MakeQuestionUserActionConsumer extends BaseActionConsumer<MakeQuestionUserAction> {
+public class DefaultUserActionConsumer extends BaseActionConsumer<DefaultUserAction> {
     private final TopicService topicService;
     private final UserService userService;
     private final UserStateService userStateService;
 
-    public MakeQuestionUserActionConsumer(ActionBus actionBus,
-                                          TopicService topicService,
-                                          UserService userService,
-                                          UserStateService userStateService) {
-        super(MakeQuestionUserAction.class, actionBus);
+    public DefaultUserActionConsumer(ActionBus actionBus,
+                                     TopicService topicService,
+                                     UserService userService,
+                                     UserStateService userStateService) {
+        super(DefaultUserAction.class, actionBus);
 
         this.topicService = topicService;
         this.userService = userService;
@@ -32,7 +32,7 @@ public class MakeQuestionUserActionConsumer extends BaseActionConsumer<MakeQuest
     }
 
     @Override
-    protected void acceptTAction(MakeQuestionUserAction action) {
+    protected void acceptTAction(DefaultUserAction action) {
         Optional<UserStateDto> userState = getUserStateByAction(action);
         Optional<UserDto> user = getUserByUserState(userState);
 
@@ -43,7 +43,7 @@ public class MakeQuestionUserActionConsumer extends BaseActionConsumer<MakeQuest
         }
     }
 
-    private Optional<UserStateDto> getUserStateByAction(MakeQuestionUserAction action) {
+    private Optional<UserStateDto> getUserStateByAction(DefaultUserAction action) {
         return userStateService.getUserStateByChannelAndChannelUserId(action.getChannel(), action.getChannelUserId());
     }
 

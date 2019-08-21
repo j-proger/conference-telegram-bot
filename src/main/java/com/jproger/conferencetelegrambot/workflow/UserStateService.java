@@ -2,6 +2,7 @@ package com.jproger.conferencetelegrambot.workflow;
 
 import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
+import com.jproger.conferencetelegrambot.workflow.entities.Status;
 import com.jproger.conferencetelegrambot.workflow.entities.UserState;
 import com.jproger.conferencetelegrambot.workflow.mappers.UserStateMapper;
 import com.jproger.conferencetelegrambot.workflow.repositories.UserStateRepository;
@@ -28,6 +29,7 @@ public class UserStateService {
         UserState state = UserState.builder()
                 .channel(channel)
                 .channelUserId(channelUserId)
+                .status(Status.NEW)
                 .build();
 
         return userStateMapper.toUserStateDtoMap(
@@ -47,12 +49,14 @@ public class UserStateService {
 
     private void updateInnerUserId(UserState state, long innerUserId) {
         state.setInnerUserId(innerUserId);
+        state.setStatus(Status.REGISTERED);
 
         userStateRepository.save(state);
     }
 
     private void updateTopicKey(UserState state, String topicKey) {
         state.setTopicKey(topicKey);
+        state.setStatus(Status.COLLECT_QUESTIONS);
 
         userStateRepository.save(state);
     }

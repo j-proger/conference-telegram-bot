@@ -34,6 +34,12 @@ public class UserState {
     private ChannelType channel;
 
     /**
+     * Текущий статус пользователя
+     */
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    /**
      * Id внутри сервиса Users
      */
     private Long innerUserId;
