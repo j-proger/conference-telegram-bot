@@ -48,7 +48,7 @@ public class ShareContactUserActionConsumer extends BaseActionConsumer<ShareCont
     }
 
     private void finishRequestContact(ChannelType channel, String userId) {
-        FinishRequestContactSystemAction action = new FinishRequestContactSystemAction(channel, userId, "Thank you for your phone number!");
+        FinishRequestContactSystemAction action = new FinishRequestContactSystemAction(channel, userId, "Спасибо! Теперь и я узнал тебя.");
 
         actionBus.sendAction(action);
     }

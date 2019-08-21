@@ -49,7 +49,7 @@ public class RequestContactSystemActionConsumer extends BaseActionConsumer<Reque
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
-        KeyboardButton button = new KeyboardButton("Share contact");
+        KeyboardButton button = new KeyboardButton("Зарегистрироваться");
 
         button.setRequestContact(Boolean.TRUE);
 

@@ -39,7 +39,7 @@ public class StatusRequestUserActionConsumer extends BaseActionConsumer<StatusRe
     }
 
     private String getStatusDescription(Status status) {
-        String description = "<UNKNOWN>";
+        String description = "Происходит что-то непонятное...";
 
         switch (status) {
             case NEW:

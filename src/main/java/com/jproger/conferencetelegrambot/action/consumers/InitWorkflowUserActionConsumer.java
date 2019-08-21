@@ -35,7 +35,7 @@ public class InitWorkflowUserActionConsumer extends BaseActionConsumer<InitWorkf
 
         if (StringUtils.isNotBlank(action.getTopic())) {
             if (!isTopicExists(action.getTopic())) {
-                throw new UserActionException("You sent wrong topic. Try again with another topic.");
+                throw new UserActionException("");
             }
 
             updateTopicKey(action);
@@ -49,7 +49,7 @@ public class InitWorkflowUserActionConsumer extends BaseActionConsumer<InitWorkf
     private void updateTopicKey(InitWorkflowUserAction action) {
         userStateService.updateTopicKey(action.getChannel(), action.getChannelUserId(), action.getTopic());
 
-        String message = String.format("You selected '%s' topic", action.getTopic());
+        String message = String.format("Я запомнил ваш выбор доклада - '%s'", action.getTopic());
 
         sendMessage(action.getChannel(), action.getChannelUserId(), message);
     }
@@ -65,11 +65,11 @@ public class InitWorkflowUserActionConsumer extends BaseActionConsumer<InitWorkf
     }
 
     private void greetUser(ChannelType channel, String userId) {
-        sendMessage(channel, userId, "Hello, my dear friend.");
+        sendMessage(channel, userId, "Привет! Кажется, мы еще не знакомы... Меня зовут Добби.");
     }
 
     private void requestContactInfo(ChannelType channel, String userId) {
-        RequestContactSystemAction action = new RequestContactSystemAction(channel, userId, "Can I have your phone number, please?");
+        RequestContactSystemAction action = new RequestContactSystemAction(channel, userId, "Поделишься со мной информацией о себе? Для этого нажми кнопку \"Зарегистрироваться\".");
 
         actionBus.sendAction(action);
     }

@@ -53,15 +53,15 @@ public class DefaultUserActionConsumer extends BaseActionConsumer<DefaultUserAct
     }
 
     private void requestRegisterUser(ChannelType channel, String channelUserId) {
-        RequestContactSystemAction action = new RequestContactSystemAction(channel, channelUserId, "You don't registered yet. Please, give us your phone number");
+        RequestContactSystemAction action = new RequestContactSystemAction(channel, channelUserId, "Я вас еще не знаю... Зарегистрируйтесь, пожалуйста.");
 
         actionBus.sendAction(action);
     }
 
     private void createQuestion(UserStateDto userState, UserDto user, String question) {
         topicService.createQuestion(user.getId(), userState.getTopicKey(), question)
-                .orElseThrow(() -> new UserActionException("Something went wrong. Probably you didn't select a topic."));
+                .orElseThrow(() -> new UserActionException("Я не знаю на каком вы докладе находитесь... Выберете его, пожалуйста"));
 
-        sendTextMessageToUser(userState.getChannel(), userState.getChannelUserId(), "Your question was registered. Thank you.");
+        sendTextMessageToUser(userState.getChannel(), userState.getChannelUserId(), "Я записал ваш вопрос. В конце доклада я передам все вопросы докладчику.");
     }
 }
