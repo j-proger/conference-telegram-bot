@@ -9,6 +9,7 @@ import com.jproger.conferencetelegrambot.core.operations.dto.RequestContactSyste
 import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
 import com.jproger.conferencetelegrambot.topics.TopicService;
 import com.jproger.conferencetelegrambot.topics.dto.TopicDto;
+import com.jproger.conferencetelegrambot.topics.entities.Topic;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import com.jproger.conferencetelegrambot.workflow.entities.Status;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -39,14 +39,11 @@ public class InitWorkflowUserOperationExecutor extends BaseOperationExecutor<Ini
                 .orElseGet(() -> this.createUserState(operation));
 
         if (Objects.nonNull(operation.getTopicId())) {
-            Optional<TopicDto> topic = topicService.getTopicById(operation.getTopicId());
+            TopicDto topic = topicService.getTopicById(operation.getTopicId()).orElse(null);
 
-            if (topic.isPresent()) {
-                updateTopic(operation, topic.get());
-            } else {
-                throw new UserActionException("Доклад с идентификатором '" + operation.getTopicId() + "' не найден :(");
-            }
+            validateTopicStatus(topic);
 
+            updateTopic(operation, topic);
         }
     }
 
@@ -58,6 +55,16 @@ public class InitWorkflowUserOperationExecutor extends BaseOperationExecutor<Ini
         String message = String.format("Вы выбрали доклад - '%s'", topic.getName());
 
         sendMessage(operation.getChannel(), operation.getChannelUserId(), message);
+    }
+
+    private void validateTopicStatus(TopicDto topic) {
+        if (Objects.isNull(topic)) {
+            throw new UserActionException("Доклад не найден");
+        } else if (topic.getStatus() == Topic.Status.CREATED) {
+            throw new UserActionException("Доклад еще не начался");
+        } else if (topic.getStatus() == Topic.Status.FINISHED) {
+            throw new UserActionException("Доклад уже завершился");
+        }
     }
 
     private UserStateDto createUserState(InitWorkflowUserOperation action) {

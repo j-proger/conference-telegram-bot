@@ -18,4 +18,3 @@ public class DobbyApplication {
 //TODO: Put away text messages for users to message source
 //TODO: Autotests
 //TODO: Add check topic status for selection
-//TODO: Add topic name for back message to user

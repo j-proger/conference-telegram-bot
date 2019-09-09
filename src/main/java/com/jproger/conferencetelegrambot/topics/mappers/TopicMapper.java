@@ -11,6 +11,7 @@ public class TopicMapper {
                 .id(topic.getId())
                 .key(topic.getKey())
                 .name(topic.getName())
+                .status(topic.getStatus())
                 .build();
     }
 }
