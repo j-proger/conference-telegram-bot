@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TopicMapper {
-    public TopicDto toTopicDtoMap(Topic topic) {
+    public TopicDto toTopicDto(Topic topic) {
         return TopicDto.builder()
                 .id(topic.getId())
                 .key(topic.getKey())

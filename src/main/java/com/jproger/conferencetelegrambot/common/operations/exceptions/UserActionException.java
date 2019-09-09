@@ -1,4 +1,4 @@
-package com.jproger.conferencetelegrambot.action.consumers.exceptions;
+package com.jproger.conferencetelegrambot.common.operations.exceptions;
 
 public class UserActionException extends RuntimeException {
     public UserActionException(String message) {

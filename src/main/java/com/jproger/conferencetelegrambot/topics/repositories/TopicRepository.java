@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Optional<Topic> findByKey(String key);
+
+    Optional<Topic> findByIdAndStatus(long id, Topic.Status status);
 }

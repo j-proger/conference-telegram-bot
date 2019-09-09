@@ -1,1 +1,1 @@
-INSERT INTO TOPIC (KEY, NAME ) VALUES ('A', 'This is the first topic');
+INSERT INTO TOPIC (KEY, NAME, STATUS) VALUES ('A', 'This is the first topic', 'STARTED');

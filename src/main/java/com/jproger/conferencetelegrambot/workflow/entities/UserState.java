@@ -1,6 +1,6 @@
 package com.jproger.conferencetelegrambot.workflow.entities;
 
-import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
+import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +34,12 @@ public class UserState {
     private ChannelType channel;
 
     /**
+     * Текущий статус пользователя
+     */
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    /**
      * Id внутри сервиса Users
      */
     private Long innerUserId;
@@ -41,6 +47,6 @@ public class UserState {
     /**
      * Выбранный доклад
      */
-    private String topicKey;
+    private Long topicId;
 }
 

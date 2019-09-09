@@ -1,7 +1,7 @@
 channels:
   telegram:
     bot:
-      enabled: false
+      enabled: true
       name: "ConferenceRequesterBot"
       token: "868656591:AAEN_gOc2GQa4zo5Gp4KWPq1Rt_XgZBuSgY"
       proxy:

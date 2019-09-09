@@ -1,7 +1,8 @@
-package com.jproger.conferencetelegrambot.action.consumers;
+package com.jproger.conferencetelegrambot.channels.telegram.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.dto.FinishRequestContactSystemAction;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
+import com.jproger.conferencetelegrambot.core.operations.dto.FinishRequestContactSystemOperation;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -11,17 +12,17 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRem
 
 @Slf4j
 @Component
-public class FinishRequestContactSystemActionConsumer extends BaseActionConsumer<FinishRequestContactSystemAction> {
+public class FinishRequestContactSystemOperationExecutor extends BaseOperationExecutor<FinishRequestContactSystemOperation> {
     private final TelegramBot telegramBot;
 
-    public FinishRequestContactSystemActionConsumer(ActionBus actionBus, TelegramBot telegramBot) {
-        super(FinishRequestContactSystemAction.class, actionBus);
+    public FinishRequestContactSystemOperationExecutor(ActionBus actionBus, TelegramBot telegramBot) {
+        super(FinishRequestContactSystemOperation.class, actionBus);
 
         this.telegramBot = telegramBot;
     }
 
     @Override
-    public void acceptTAction(FinishRequestContactSystemAction action) {
+    public void acceptTAction(FinishRequestContactSystemOperation action) {
         switch (action.getChannel()) {
             case TELEGRAM:
                 sendThanksgivingMessageToTelegramChannel(action.getChannelUserId(), action.getMessage());
