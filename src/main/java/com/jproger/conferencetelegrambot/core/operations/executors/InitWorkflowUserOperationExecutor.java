@@ -2,12 +2,13 @@ package com.jproger.conferencetelegrambot.core.operations.executors;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
+import com.jproger.conferencetelegrambot.common.operations.exceptions.UserActionException;
 import com.jproger.conferencetelegrambot.core.operations.dto.InitWorkflowUserOperation;
 import com.jproger.conferencetelegrambot.core.operations.dto.Operation;
 import com.jproger.conferencetelegrambot.core.operations.dto.RequestContactSystemOperation;
 import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
-import com.jproger.conferencetelegrambot.common.operations.exceptions.UserActionException;
 import com.jproger.conferencetelegrambot.topics.TopicService;
+import com.jproger.conferencetelegrambot.topics.dto.TopicDto;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import com.jproger.conferencetelegrambot.workflow.entities.Status;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -37,24 +39,23 @@ public class InitWorkflowUserOperationExecutor extends BaseOperationExecutor<Ini
                 .orElseGet(() -> this.createUserState(operation));
 
         if (Objects.nonNull(operation.getTopicId())) {
-            if (!isTopicExists(operation.getTopicId())) {
-                throw new UserActionException("Доклад не найден :(");
+            Optional<TopicDto> topic = topicService.getTopicById(operation.getTopicId());
+
+            if (topic.isPresent()) {
+                updateTopic(operation, topic.get());
+            } else {
+                throw new UserActionException("Доклад с идентификатором '" + operation.getTopicId() + "' не найден :(");
             }
 
-            updateTopic(operation);
         }
     }
 
-    private boolean isTopicExists(Long topicId) {
-        return topicService.getTopicById(topicId).isPresent();
-    }
-
-    private void updateTopic(InitWorkflowUserOperation operation) {
-        userStateService.updateSelectedTopic(operation.getChannel(), operation.getChannelUserId(), operation.getTopicId());
+    private void updateTopic(InitWorkflowUserOperation operation, TopicDto topic) {
+        userStateService.updateSelectedTopic(operation.getChannel(), operation.getChannelUserId(), topic.getId());
 
         userStateService.updateStatus(operation.getChannel(), operation.getChannelUserId(), Status.COLLECT_QUESTIONS);
 
-        String message = String.format("Я запомнил ваш выбор доклада - '%d'", operation.getTopicId());
+        String message = String.format("Вы выбрали доклад - '%s'", topic.getName());
 
         sendMessage(operation.getChannel(), operation.getChannelUserId(), message);
     }

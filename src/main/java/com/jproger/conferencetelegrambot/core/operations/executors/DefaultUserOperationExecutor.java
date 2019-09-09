@@ -39,10 +39,13 @@ public class DefaultUserOperationExecutor extends BaseOperationExecutor<DefaultU
     @Override
     protected void acceptTAction(DefaultUserOperation operation) {
         Optional<UserStateDto> userState = getUserStateByAction(operation);
-        Optional<UserDto> user = getUserByUserState(userState);
+        Optional<UserDto> user = getUserByUserState(
+                userState.map(UserStateDto::getInnerUserId)
+                        .orElse(null)
+        );
 
         if (userState.isPresent() && user.isPresent()) {
-            handleAction(operation, userState.get(), user.get());
+            handleOperation(operation, userState.get(), user.get());
         } else {
             requestRegisterUser(operation.getChannel(), operation.getChannelUserId());
         }
@@ -52,12 +55,12 @@ public class DefaultUserOperationExecutor extends BaseOperationExecutor<DefaultU
         return userStateService.getUserStateByChannelAndChannelUserId(action.getChannel(), action.getChannelUserId());
     }
 
-    private Optional<UserDto> getUserByUserState(Optional<UserStateDto> userState) {
-        return userState.map(UserStateDto::getInnerUserId)
+    private Optional<UserDto> getUserByUserState(Long userId) {
+        return Optional.ofNullable(userId)
                 .flatMap(userService::getUserById);
     }
 
-    private void handleAction(DefaultUserOperation operation, UserStateDto userState, UserDto user) {
+    private void handleOperation(DefaultUserOperation operation, UserStateDto userState, UserDto user) {
         switch (userState.getStatus()) {
             case COLLECT_QUESTIONS:
                 createQuestion(userState, user, operation.getText());
