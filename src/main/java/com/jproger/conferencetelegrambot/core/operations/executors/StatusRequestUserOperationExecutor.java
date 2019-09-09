@@ -1,9 +1,10 @@
-package com.jproger.conferencetelegrambot.action.consumers;
+package com.jproger.conferencetelegrambot.core.operations.executors;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.dto.Action.ChannelType;
-import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
-import com.jproger.conferencetelegrambot.action.bus.dto.StatusRequestUserAction;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
+import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
+import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
+import com.jproger.conferencetelegrambot.core.operations.dto.StatusRequestUserOperation;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import com.jproger.conferencetelegrambot.workflow.entities.Status;
@@ -12,17 +13,17 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class StatusRequestUserActionConsumer extends BaseActionConsumer<StatusRequestUserAction> {
+public class StatusRequestUserOperationExecutor extends BaseOperationExecutor<StatusRequestUserOperation> {
     private final UserStateService userStateService;
 
-    public StatusRequestUserActionConsumer(ActionBus actionBus, UserStateService userStateService) {
-        super(StatusRequestUserAction.class, actionBus);
+    public StatusRequestUserOperationExecutor(ActionBus actionBus, UserStateService userStateService) {
+        super(StatusRequestUserOperation.class, actionBus);
 
         this.userStateService = userStateService;
     }
 
     @Override
-    protected void acceptTAction(StatusRequestUserAction action) {
+    protected void acceptTAction(StatusRequestUserOperation action) {
         ChannelType channel = action.getChannel();
         String channelUserId = action.getChannelUserId();
 
@@ -33,7 +34,7 @@ public class StatusRequestUserActionConsumer extends BaseActionConsumer<StatusRe
     }
 
     private void sendStatusDescriptionToUser(ChannelType channel, String channelUserId, String statusDescription) {
-        SendTextMessageSystemAction action = new SendTextMessageSystemAction(channel, channelUserId, statusDescription);
+        SendTextMessageSystemOperation action = new SendTextMessageSystemOperation(channel, channelUserId, statusDescription);
 
         actionBus.sendAction(action);
     }

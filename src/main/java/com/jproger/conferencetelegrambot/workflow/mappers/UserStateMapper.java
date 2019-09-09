@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserStateMapper {
-    public UserStateDto toUserStateDtoMap(UserState state) {
+    public UserStateDto toUserStateDto(UserState state) {
         return UserStateDto.builder()
                 .channel(state.getChannel())
                 .channelUserId(state.getChannelUserId())
                 .status(state.getStatus())
                 .innerUserId(state.getInnerUserId())
-                .topicKey(state.getTopicKey())
+                .topicId(state.getTopicId())
                 .build();
     }
 }

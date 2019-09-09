@@ -1,6 +1,6 @@
 package com.jproger.conferencetelegrambot.action.bus;
 
-import com.jproger.conferencetelegrambot.action.bus.dto.Action;
+import com.jproger.conferencetelegrambot.core.operations.dto.Operation;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -14,11 +14,11 @@ public class ActionBus {
         consumers.add(consumer);
     }
 
-    public void sendAction(Action action) {
-        Class<? extends Action> actionClass = action.getClass();
+    public void sendAction(Operation operation) {
+        Class<? extends Operation> actionClass = operation.getClass();
 
         consumers.stream()
                 .filter(consumer -> consumer.getActionClass().equals(actionClass))
-                .forEach(consumer -> consumer.accept(action));
+                .forEach(consumer -> consumer.accept(operation));
     }
 }

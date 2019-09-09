@@ -1,7 +1,8 @@
-package com.jproger.conferencetelegrambot.action.consumers;
+package com.jproger.conferencetelegrambot.channels.telegram.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.dto.SendTextMessageSystemAction;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
+import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +11,17 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Slf4j
 @Component
-public class SendTextMessageSystemActionConsumer extends BaseActionConsumer<SendTextMessageSystemAction> {
+public class SendTextMessageSystemOperationExecutor extends BaseOperationExecutor<SendTextMessageSystemOperation> {
     private final TelegramBot telegramBot;
 
-    public SendTextMessageSystemActionConsumer(ActionBus actionBus, TelegramBot telegramBot) {
-        super(SendTextMessageSystemAction.class, actionBus);
+    public SendTextMessageSystemOperationExecutor(ActionBus actionBus, TelegramBot telegramBot) {
+        super(SendTextMessageSystemOperation.class, actionBus);
 
         this.telegramBot = telegramBot;
     }
 
     @Override
-    public void acceptTAction(SendTextMessageSystemAction action) {
+    public void acceptTAction(SendTextMessageSystemOperation action) {
         switch (action.getChannel()) {
             case TELEGRAM:
                 sendTextMessageToTelegramBot(action.getChannelUserId(), action.getMessage());

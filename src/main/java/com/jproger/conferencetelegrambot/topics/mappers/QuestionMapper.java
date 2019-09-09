@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class QuestionMapper {
-    public QuestionDto toQuestionDtoMap(Question question, UserDto user) {
+    public QuestionDto toQuestionDto(Question question, UserDto user) {
         return QuestionDto.builder()
                 .id(question.getId())
                 .description(question.getDescription())

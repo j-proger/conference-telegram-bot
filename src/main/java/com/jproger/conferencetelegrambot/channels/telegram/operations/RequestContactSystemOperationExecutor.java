@@ -1,7 +1,8 @@
-package com.jproger.conferencetelegrambot.action.consumers;
+package com.jproger.conferencetelegrambot.channels.telegram.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.action.bus.dto.RequestContactSystemAction;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
+import com.jproger.conferencetelegrambot.core.operations.dto.RequestContactSystemOperation;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +17,17 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class RequestContactSystemActionConsumer extends BaseActionConsumer<RequestContactSystemAction> {
+public class RequestContactSystemOperationExecutor extends BaseOperationExecutor<RequestContactSystemOperation> {
     private final TelegramBot telegramBot;
 
-    public RequestContactSystemActionConsumer(ActionBus actionBus, TelegramBot telegramBot) {
-        super(RequestContactSystemAction.class, actionBus);
+    public RequestContactSystemOperationExecutor(ActionBus actionBus, TelegramBot telegramBot) {
+        super(RequestContactSystemOperation.class, actionBus);
 
         this.telegramBot = telegramBot;
     }
 
     @Override
-    public void acceptTAction(RequestContactSystemAction action) {
+    public void acceptTAction(RequestContactSystemOperation action) {
         switch (action.getChannel()) {
             case TELEGRAM:
                 sendRequestContactMessageToTelegramChannel(action.getChannelUserId(), action.getMessage());

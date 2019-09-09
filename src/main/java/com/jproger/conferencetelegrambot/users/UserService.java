@@ -24,27 +24,27 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDto createUser(@Nonnull UserDto userDto) {
-        User newUser = User.builder()
-                .firstName(userDto.getFirstName())
-                .middleName(userDto.getMiddleName())
-                .lastName(userDto.getLastName())
-                .phoneNumber(userDto.getPhoneNumber())
-                .build();
+        User user = userRepository.save(
+                User.builder()
+                        .firstName(userDto.getFirstName())
+                        .middleName(userDto.getMiddleName())
+                        .lastName(userDto.getLastName())
+                        .phoneNumber(userDto.getPhoneNumber())
+                        .build()
+        );
 
-        User user = userRepository.save(newUser);
-
-        return userMapper.toUserDtoMap(user);
+        return userMapper.toUserDto(user);
     }
 
     public PageResponseDto<UserDto> getUsers(@Valid PageRequestDto page) {
         Page<UserDto> users = userRepository.findAll(PageRequest.of(page.getPage(), page.getSize()))
-                .map(userMapper::toUserDtoMap);
+                .map(userMapper::toUserDto);
 
         return PageResponseDto.of(users);
     }
 
     public Optional<UserDto> getUserById(long userId) {
         return userRepository.findById(userId)
-                .map(userMapper::toUserDtoMap);
+                .map(userMapper::toUserDto);
     }
 }
