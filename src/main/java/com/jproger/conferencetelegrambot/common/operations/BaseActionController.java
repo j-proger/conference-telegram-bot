@@ -2,16 +2,16 @@ package com.jproger.conferencetelegrambot.common.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.action.bus.ActionConsumer;
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation;
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
-import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
+import com.jproger.conferencetelegrambot.common.actions.Action;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.common.operations.exceptions.UserActionException;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.PostConstruct;
 
 @RequiredArgsConstructor
-public abstract class BaseOperationExecutor<T extends Operation> implements ActionConsumer {
+public abstract class BaseActionController<T extends Action> implements ActionConsumer {
     private static final String COMMON_ERROR_TEXT = "Извините, неизвестная мне ошибка...";
 
     private final Class<T> tClass;
@@ -23,26 +23,26 @@ public abstract class BaseOperationExecutor<T extends Operation> implements Acti
     }
 
     @Override
-    public Class<? extends Operation> getActionClass() {
+    public Class<? extends Action> getActionClass() {
         return tClass;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void accept(Operation operation) {
+    public void accept(Action action) {
         try {
-            acceptTAction((T) operation);
+            acceptTAction((T) action);
         } catch (UserActionException ex) {
-            sendTextMessageToUser(operation.getChannel(), operation.getChannelUserId(), ex.getMessage());
+            sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), ex.getMessage());
         } catch (Throwable ex) {
-            sendTextMessageToUser(operation.getChannel(), operation.getChannelUserId(), COMMON_ERROR_TEXT);
+            sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), COMMON_ERROR_TEXT);
         }
     }
 
     protected abstract void acceptTAction(T action);
 
     protected void sendTextMessageToUser(ChannelType channel, String channelUserId, String text) {
-        SendTextMessageSystemOperation message = new SendTextMessageSystemOperation(channel, channelUserId, text);
+        SendTextMessageSystemAction message = new SendTextMessageSystemAction(channel, channelUserId, text);
 
         actionBus.sendAction(message);
     }

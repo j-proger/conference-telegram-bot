@@ -1,11 +1,11 @@
-package com.jproger.conferencetelegrambot.core.operations.dto;
+package com.jproger.conferencetelegrambot.common.actions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public abstract class Operation {
+public abstract class Action {
     public enum ChannelType {
         REST,
         TELEGRAM

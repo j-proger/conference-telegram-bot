@@ -1,30 +1,33 @@
 package com.jproger.conferencetelegrambot.channels.telegram.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
-import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
 import com.jproger.conferencetelegrambot.channels.telegram.TelegramBot;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import javax.annotation.Nonnull;
+
 @Slf4j
 @Component
-public class SendTextMessageSystemOperationExecutor extends BaseOperationExecutor<SendTextMessageSystemOperation> {
+public class SendTextMessageSystemOperation extends BaseOperation {
     private final TelegramBot telegramBot;
 
-    public SendTextMessageSystemOperationExecutor(ActionBus actionBus, TelegramBot telegramBot) {
-        super(SendTextMessageSystemOperation.class, actionBus);
+    public SendTextMessageSystemOperation(ActionBus actionBus, TelegramBot telegramBot) {
+        super(actionBus);
 
         this.telegramBot = telegramBot;
     }
 
-    @Override
-    public void acceptTAction(SendTextMessageSystemOperation action) {
-        switch (action.getChannel()) {
+    public void execute(@Nonnull ChannelType channel,
+                        @Nonnull String channelUserId,
+                        @Nonnull String message) {
+        switch (channel) {
             case TELEGRAM:
-                sendTextMessageToTelegramBot(action.getChannelUserId(), action.getMessage());
+                sendTextMessageToTelegramBot(channelUserId, message);
                 break;
         }
     }

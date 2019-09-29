@@ -1,8 +1,8 @@
 package com.jproger.conferencetelegrambot.topics;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
-import com.jproger.conferencetelegrambot.core.operations.dto.FinishTopicSystemOperation;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.FinishTopicSystemAction;
 import com.jproger.conferencetelegrambot.common.dto.PageRequestDto;
 import com.jproger.conferencetelegrambot.common.dto.PageResponseDto;
 import com.jproger.conferencetelegrambot.topics.dto.QuestionDto;
@@ -36,7 +36,7 @@ public class TopicController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiOperation("Завершить доклад. Это запустит процесс сбора отзывов у пользователей")
     public void finishTopic(@PathVariable long topicId) {
-        FinishTopicSystemOperation action = new FinishTopicSystemOperation(ChannelType.REST, null, topicId);
+        FinishTopicSystemAction action = new FinishTopicSystemAction(ChannelType.REST, null, topicId);
 
         actionBus.sendAction(action);
     }

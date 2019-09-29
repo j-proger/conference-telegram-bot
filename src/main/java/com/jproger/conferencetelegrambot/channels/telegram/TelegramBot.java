@@ -1,7 +1,7 @@
 package com.jproger.conferencetelegrambot.channels.telegram;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.core.operations.dto.*;
+import com.jproger.conferencetelegrambot.common.actions.*;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType.TELEGRAM;
+import static com.jproger.conferencetelegrambot.common.actions.Action.ChannelType.TELEGRAM;
 import static com.jproger.conferencetelegrambot.channels.telegram.TelegramCommandConstants.START_COMMAND;
 import static com.jproger.conferencetelegrambot.channels.telegram.TelegramCommandConstants.STATUS_REQUEST_COMMAND;
 
@@ -40,19 +40,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Operation operation = null;
+        Action action = null;
 
         if (isStartCommand(update)) {
-            operation = createStartUserAction(update);
+            action = createStartUserAction(update);
         } else if (isShareContactCommand(update)) {
-            operation = createShareContactUserAction(update);
+            action = createShareContactUserAction(update);
         } else if (isStatusRequestCommand(update)) {
-            operation = createStatusRequestUserAction(update);
+            action = createStatusRequestUserAction(update);
         } else if (isHasText(update)) {
-            operation = createDefaultUserAction(update);
+            action = createDefaultUserAction(update);
         }
 
-        Optional.ofNullable(operation)
+        Optional.ofNullable(action)
                 .ifPresent(actionBus::sendAction);
     }
 
@@ -78,7 +78,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return update.getMessage().hasText();
     }
 
-    private Operation createStartUserAction(Update update) {
+    private Action createStartUserAction(Update update) {
         Message message = update.getMessage();
         String channelUserId = message.getChatId().toString();
         Long topicId = Arrays.stream(message.getText().split(" "))
@@ -88,10 +88,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 .map(Long::valueOf)                 // мапим в long
                 .orElse(null);
 
-        return new InitWorkflowUserOperation(TELEGRAM, channelUserId, topicId);
+        return new InitWorkflowUserAction(TELEGRAM, channelUserId, topicId);
     }
 
-    private Operation createShareContactUserAction(Update update) {
+    private Action createShareContactUserAction(Update update) {
         Message message = update.getMessage();
         String channelUserId = message.getChatId().toString();
         String phoneNumber = message.getContact().getPhoneNumber();
@@ -99,20 +99,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         String firstName = message.getFrom().getFirstName();
         String middleName = "";
 
-        return new ShareContactUserOperation(TELEGRAM, channelUserId, lastName, firstName, middleName, phoneNumber);
+        return new ShareContactUserAction(TELEGRAM, channelUserId, lastName, firstName, middleName, phoneNumber);
     }
 
-    private Operation createStatusRequestUserAction(Update update) {
+    private Action createStatusRequestUserAction(Update update) {
         String channelUserId = update.getMessage().getChatId().toString();
 
-        return new StatusRequestUserOperation(TELEGRAM, channelUserId);
+        return new StatusRequestUserAction(TELEGRAM, channelUserId);
     }
 
-    private Operation createDefaultUserAction(Update update) {
+    private Action createDefaultUserAction(Update update) {
         Message message = update.getMessage();
         String channelUserId = message.getChatId().toString();
         String text = message.getText();
 
-        return new DefaultUserOperation(TELEGRAM, channelUserId, text);
+        return new DefaultUserAction(TELEGRAM, channelUserId, text);
     }
 }

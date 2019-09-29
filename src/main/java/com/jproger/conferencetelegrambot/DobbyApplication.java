@@ -18,3 +18,8 @@ public class DobbyApplication {
 //TODO: Put away text messages for users to message source
 //TODO: Autotests
 //TODO: Add check topic status for selection
+//TODO: Оценка доклада (5 бальная шкала + сообщение)
+//TODO: Управление докладом
+//TODO: Модерирование вопросов
+//TODO: Список докладов в боте
+//TODO: Добавить тестовых данных

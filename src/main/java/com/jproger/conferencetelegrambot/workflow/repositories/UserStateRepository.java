@@ -1,6 +1,6 @@
 package com.jproger.conferencetelegrambot.workflow.repositories;
 
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
 import com.jproger.conferencetelegrambot.workflow.entities.UserState;
 import org.springframework.data.jpa.repository.JpaRepository;
 

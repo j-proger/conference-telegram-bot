@@ -27,7 +27,6 @@ public class UserService {
         User user = userRepository.save(
                 User.builder()
                         .firstName(userDto.getFirstName())
-                        .middleName(userDto.getMiddleName())
                         .lastName(userDto.getLastName())
                         .phoneNumber(userDto.getPhoneNumber())
                         .build()

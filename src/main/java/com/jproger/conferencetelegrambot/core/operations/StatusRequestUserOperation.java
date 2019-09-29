@@ -1,32 +1,30 @@
-package com.jproger.conferencetelegrambot.core.operations.executors;
+package com.jproger.conferencetelegrambot.core.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
-import com.jproger.conferencetelegrambot.core.operations.dto.SendTextMessageSystemOperation;
-import com.jproger.conferencetelegrambot.core.operations.dto.StatusRequestUserOperation;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import com.jproger.conferencetelegrambot.workflow.entities.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
+
 @Slf4j
 @Component
-public class StatusRequestUserOperationExecutor extends BaseOperationExecutor<StatusRequestUserOperation> {
+public class StatusRequestUserOperation extends BaseOperation {
     private final UserStateService userStateService;
 
-    public StatusRequestUserOperationExecutor(ActionBus actionBus, UserStateService userStateService) {
-        super(StatusRequestUserOperation.class, actionBus);
+    public StatusRequestUserOperation(ActionBus actionBus, UserStateService userStateService) {
+        super(actionBus);
 
         this.userStateService = userStateService;
     }
 
-    @Override
-    protected void acceptTAction(StatusRequestUserOperation action) {
-        ChannelType channel = action.getChannel();
-        String channelUserId = action.getChannelUserId();
-
+    public void execute(@Nonnull ChannelType channel,
+                           @Nonnull String channelUserId) {
         userStateService.getUserStateByChannelAndChannelUserId(channel, channelUserId)
                 .map(UserStateDto::getStatus)
                 .map(this::getStatusDescription)
@@ -34,7 +32,7 @@ public class StatusRequestUserOperationExecutor extends BaseOperationExecutor<St
     }
 
     private void sendStatusDescriptionToUser(ChannelType channel, String channelUserId, String statusDescription) {
-        SendTextMessageSystemOperation action = new SendTextMessageSystemOperation(channel, channelUserId, statusDescription);
+        SendTextMessageSystemAction action = new SendTextMessageSystemAction(channel, channelUserId, statusDescription);
 
         actionBus.sendAction(action);
     }

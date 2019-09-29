@@ -1,9 +1,9 @@
 package com.jproger.conferencetelegrambot.action.bus;
 
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation;
+import com.jproger.conferencetelegrambot.common.actions.Action;
 
 import java.util.function.Consumer;
 
-public interface ActionConsumer extends Consumer<Operation> {
-    Class<? extends Operation> getActionClass();
+public interface ActionConsumer extends Consumer<Action> {
+    Class<? extends Action> getActionClass();
 }

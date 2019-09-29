@@ -10,7 +10,6 @@ public class UserMapper {
         return UserDto.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
-                .middleName(user.getMiddleName())
                 .lastName(user.getLastName())
                 .phoneNumber(user.getPhoneNumber())
                 .build();

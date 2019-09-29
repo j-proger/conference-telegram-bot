@@ -1,6 +1,6 @@
 package com.jproger.conferencetelegrambot.workflow.entities;
 
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -18,9 +18,6 @@ public class UserDto {
     @ApiModelProperty("Имя")
     private String firstName;
 
-    @ApiModelProperty("Отчество")
-    private String middleName;
-
     @ApiModelProperty("Номер телефона")
     private String phoneNumber;
 }

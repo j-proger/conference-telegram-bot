@@ -21,7 +21,5 @@ public class User {
 
     private String firstName;
 
-    private String middleName;
-
     private String phoneNumber;
 }

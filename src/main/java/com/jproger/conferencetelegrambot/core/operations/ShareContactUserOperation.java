@@ -1,10 +1,9 @@
-package com.jproger.conferencetelegrambot.core.operations.executors;
+package com.jproger.conferencetelegrambot.core.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.common.operations.BaseOperationExecutor;
-import com.jproger.conferencetelegrambot.core.operations.dto.FinishRequestContactSystemOperation;
-import com.jproger.conferencetelegrambot.core.operations.dto.Operation.ChannelType;
-import com.jproger.conferencetelegrambot.core.operations.dto.ShareContactUserOperation;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
+import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
+import com.jproger.conferencetelegrambot.common.actions.FinishRequestContactSystemAction;
 import com.jproger.conferencetelegrambot.users.UserService;
 import com.jproger.conferencetelegrambot.users.dto.UserDto;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
@@ -12,36 +11,39 @@ import com.jproger.conferencetelegrambot.workflow.entities.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 @Slf4j
 @Component
-public class ShareContactUserOperationExecutor extends BaseOperationExecutor<ShareContactUserOperation> {
+public class ShareContactUserOperation extends BaseOperation {
     private final UserService userService;
     private final UserStateService userStateService;
 
-    public ShareContactUserOperationExecutor(ActionBus actionBus, UserService userService, UserStateService userStateService) {
-        super(ShareContactUserOperation.class, actionBus);
+    public ShareContactUserOperation(ActionBus actionBus, UserService userService, UserStateService userStateService) {
+        super(actionBus);
 
         this.userService = userService;
         this.userStateService = userStateService;
     }
 
-    @Override
-    public void acceptTAction(ShareContactUserOperation action) {
-        UserDto user = createContact(action.getFirstName(), action.getLastName(), action.getMiddleName(), action.getPhoneNumber());
+    public void execute(@Nonnull ChannelType channel,
+                        @Nonnull String channelUserId,
+                        @Nonnull String phoneNumber,
+                        @Nonnull String firstName,
+                        @Nonnull String lastName) {
+        UserDto user = createContact(firstName, lastName, phoneNumber);
 
-        updateInnerUserIdInState(action.getChannel(), action.getChannelUserId(), user.getId());
+        updateInnerUserIdInState(channel, channelUserId, user.getId());
 
-        updateStateStatus(action.getChannel(), action.getChannelUserId());
+        updateStateStatus(channel, channelUserId);
 
-        finishRequestContact(action.getChannel(), action.getChannelUserId());
+        finishRequestContact(channel, channelUserId);
     }
 
-    private UserDto createContact(String firstName, String lastName, String middleName, String phoneNumber) {
+    private UserDto createContact(String firstName, String lastName, String phoneNumber) {
         UserDto userDto = UserDto.builder()
                 .firstName(firstName)
-                .middleName(middleName)
                 .lastName(lastName)
                 .phoneNumber(phoneNumber)
                 .build();
@@ -65,7 +67,7 @@ public class ShareContactUserOperationExecutor extends BaseOperationExecutor<Sha
     }
 
     private void finishRequestContact(ChannelType channel, String userId) {
-        FinishRequestContactSystemOperation action = new FinishRequestContactSystemOperation(channel, userId, "Спасибо! Теперь и я узнал тебя.");
+        FinishRequestContactSystemAction action = new FinishRequestContactSystemAction(channel, userId, "Спасибо! Теперь и я узнал тебя.");
 
         actionBus.sendAction(action);
     }
