@@ -1,6 +1,7 @@
 package com.jproger.conferencetelegrambot.core.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
+import com.jproger.conferencetelegrambot.common.actions.RequestTopicEstimateSystemAction;
 import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
 import com.jproger.conferencetelegrambot.common.actions.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.topics.TopicService;
@@ -14,13 +15,13 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FinishTopicUserOperation extends BaseOperation {
+public class FinishTopicOperation extends BaseOperation {
     private final TopicService topicService;
     private final UserStateService userStateService;
 
-    public FinishTopicUserOperation(ActionBus actionBus,
-                                    TopicService topicService,
-                                    UserStateService userStateService) {
+    public FinishTopicOperation(ActionBus actionBus,
+                                TopicService topicService,
+                                UserStateService userStateService) {
         super(actionBus);
 
         this.topicService = topicService;
@@ -34,14 +35,14 @@ public class FinishTopicUserOperation extends BaseOperation {
 
         userStateService.clearTopicIdFromSubscribedUsers(topicId);
 
-        notifyUsersAboutFinishTopic(subscribedUserStates);
+        requestTopicRating(subscribedUserStates, topicId);
 
         startFeedbackCollecting(subscribedUserStates);
     }
 
-    private void notifyUsersAboutFinishTopic(List<UserStateDto> states) {
+    private void requestTopicRating(List<UserStateDto> states, long topicId) {
         states.forEach(us -> {
-            SendTextMessageSystemAction action = new SendTextMessageSystemAction(us.getChannel(), us.getChannelUserId(), "Выбранный вами доклад завершен.");
+            RequestTopicEstimateSystemAction action = new RequestTopicEstimateSystemAction(us.getChannel(), us.getChannelUserId(), topicId);
 
             actionBus.sendAction(action);
         });

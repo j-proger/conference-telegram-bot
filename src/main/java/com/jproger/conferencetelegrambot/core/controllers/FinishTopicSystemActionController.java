@@ -3,14 +3,14 @@ package com.jproger.conferencetelegrambot.core.controllers;
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.common.operations.BaseActionController;
 import com.jproger.conferencetelegrambot.common.actions.FinishTopicSystemAction;
-import com.jproger.conferencetelegrambot.core.operations.FinishTopicUserOperation;
+import com.jproger.conferencetelegrambot.core.operations.FinishTopicOperation;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FinishTopicSystemActionController extends BaseActionController<FinishTopicSystemAction> {
-    private final FinishTopicUserOperation operation;
+    private final FinishTopicOperation operation;
 
-    public FinishTopicSystemActionController(ActionBus actionBus, FinishTopicUserOperation operation) {
+    public FinishTopicSystemActionController(ActionBus actionBus, FinishTopicOperation operation) {
         super(FinishTopicSystemAction.class, actionBus);
 
         this.operation = operation;

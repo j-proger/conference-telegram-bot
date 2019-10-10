@@ -2,13 +2,16 @@ package com.jproger.conferencetelegrambot.channels.telegram;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
 import com.jproger.conferencetelegrambot.common.actions.*;
+import com.jproger.conferencetelegrambot.common.operations.exceptions.UserActionException;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.jproger.conferencetelegrambot.common.actions.Action.ChannelType.TELEGRAM;
@@ -48,6 +51,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             action = createShareContactUserAction(update);
         } else if (isStatusRequestCommand(update)) {
             action = createStatusRequestUserAction(update);
+        } else if (isTopicEstimateCommand(update)) {
+            action = createTopicEstimateUserAction(update);
         } else if (isHasText(update)) {
             action = createDefaultUserAction(update);
         }
@@ -59,23 +64,38 @@ public class TelegramBot extends TelegramLongPollingBot {
     private boolean isStartCommand(Update update) {
         Message message = update.getMessage();
 
-        return message.hasText() && message.getText().toLowerCase().startsWith(START_COMMAND);
+        return Objects.nonNull(message)
+                && message.hasText()
+                && message.getText().toLowerCase().startsWith(START_COMMAND);
     }
 
     private boolean isShareContactCommand(Update update) {
         Message message = update.getMessage();
 
-        return message.hasContact();
+        return Objects.nonNull(message)
+                && message.hasContact();
     }
 
     private boolean isStatusRequestCommand(Update update) {
         Message message = update.getMessage();
 
-        return message.hasText() && message.getText().toLowerCase().startsWith(STATUS_REQUEST_COMMAND);
+        return Objects.nonNull(message)
+                && message.hasText()
+                && message.getText().toLowerCase().startsWith(STATUS_REQUEST_COMMAND);
+    }
+
+    private boolean isTopicEstimateCommand(Update update) {
+        CallbackQuery callback = update.getCallbackQuery();
+
+        return update.hasCallbackQuery()
+                && callback.getData().startsWith(TelegramCommandConstants.TOPIC_ESTIMATE_COMMAND);
     }
 
     private boolean isHasText(Update update) {
-        return update.getMessage().hasText();
+        Message message = update.getMessage();
+
+        return Objects.nonNull(message)
+                && message.hasText();
     }
 
     private Action createStartUserAction(Update update) {
@@ -106,6 +126,25 @@ public class TelegramBot extends TelegramLongPollingBot {
         String channelUserId = update.getMessage().getChatId().toString();
 
         return new StatusRequestUserAction(TELEGRAM, channelUserId);
+    }
+
+    private Action createTopicEstimateUserAction(Update update) {
+        CallbackQuery callback = update.getCallbackQuery();
+        String[] args = callback.getData().split(" ");
+
+        if(args.length < 3) {
+            throw new UserActionException("Не указан идентификатор доклада или оценка");
+        }
+
+        String channelUserId = callback.getFrom().getId().toString();
+        long topicId = Long.valueOf(args[1]);
+        int rating = Integer.valueOf(args[2]);
+
+        if(rating <= 0 || rating > 5) {
+            throw new UserActionException("Некорректная оценка доклада, должна быть в пределах от 1 до 5");
+        }
+
+        return new TopicEstimateUserAction(TELEGRAM, channelUserId, topicId, rating);
     }
 
     private Action createDefaultUserAction(Update update) {

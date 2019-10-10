@@ -13,10 +13,10 @@ import javax.annotation.Nonnull;
 
 @Slf4j
 @Component
-public class SendTextMessageSystemOperation extends BaseOperation {
+public class SendTextMessageOperation extends BaseOperation {
     private final TelegramBot telegramBot;
 
-    public SendTextMessageSystemOperation(ActionBus actionBus, TelegramBot telegramBot) {
+    public SendTextMessageOperation(ActionBus actionBus, TelegramBot telegramBot) {
         super(actionBus);
 
         this.telegramBot = telegramBot;

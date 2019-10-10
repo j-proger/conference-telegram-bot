@@ -14,10 +14,10 @@ import javax.annotation.Nonnull;
 
 @Slf4j
 @Component
-public class FinishRequestContactSystemOperation extends BaseOperation {
+public class FinishRequestContactOperation extends BaseOperation {
     private final TelegramBot telegramBot;
 
-    public FinishRequestContactSystemOperation(ActionBus actionBus, TelegramBot telegramBot) {
+    public FinishRequestContactOperation(ActionBus actionBus, TelegramBot telegramBot) {
         super(actionBus);
 
         this.telegramBot = telegramBot;

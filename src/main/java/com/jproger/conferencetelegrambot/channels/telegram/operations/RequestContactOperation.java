@@ -18,10 +18,10 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class RequestContactSystemOperation extends BaseOperation {
+public class RequestContactOperation extends BaseOperation {
     private final TelegramBot telegramBot;
 
-    public RequestContactSystemOperation(ActionBus actionBus, TelegramBot telegramBot) {
+    public RequestContactOperation(ActionBus actionBus, TelegramBot telegramBot) {
         super(actionBus);
 
         this.telegramBot = telegramBot;

@@ -1,9 +1,9 @@
 package com.jproger.conferencetelegrambot.core.operations;
 
 import com.jproger.conferencetelegrambot.action.bus.ActionBus;
-import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
 import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
 import com.jproger.conferencetelegrambot.common.actions.SendTextMessageSystemAction;
+import com.jproger.conferencetelegrambot.common.operations.BaseOperation;
 import com.jproger.conferencetelegrambot.workflow.UserStateService;
 import com.jproger.conferencetelegrambot.workflow.dto.UserStateDto;
 import com.jproger.conferencetelegrambot.workflow.entities.Status;
@@ -24,7 +24,7 @@ public class StatusRequestUserOperation extends BaseOperation {
     }
 
     public void execute(@Nonnull ChannelType channel,
-                           @Nonnull String channelUserId) {
+                        @Nonnull String channelUserId) {
         userStateService.getUserStateByChannelAndChannelUserId(channel, channelUserId)
                 .map(UserStateDto::getStatus)
                 .map(this::getStatusDescription)

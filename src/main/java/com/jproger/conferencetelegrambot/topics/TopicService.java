@@ -3,12 +3,16 @@ package com.jproger.conferencetelegrambot.topics;
 import com.jproger.conferencetelegrambot.common.dto.PageRequestDto;
 import com.jproger.conferencetelegrambot.common.dto.PageResponseDto;
 import com.jproger.conferencetelegrambot.topics.dto.QuestionDto;
+import com.jproger.conferencetelegrambot.topics.dto.RatingDto;
 import com.jproger.conferencetelegrambot.topics.dto.TopicDto;
 import com.jproger.conferencetelegrambot.topics.entities.Question;
+import com.jproger.conferencetelegrambot.topics.entities.Rating;
 import com.jproger.conferencetelegrambot.topics.entities.Topic;
 import com.jproger.conferencetelegrambot.topics.mappers.QuestionMapper;
+import com.jproger.conferencetelegrambot.topics.mappers.RatingMapper;
 import com.jproger.conferencetelegrambot.topics.mappers.TopicMapper;
 import com.jproger.conferencetelegrambot.topics.repositories.QuestionRepository;
+import com.jproger.conferencetelegrambot.topics.repositories.RatingRepository;
 import com.jproger.conferencetelegrambot.topics.repositories.TopicRepository;
 import com.jproger.conferencetelegrambot.users.UserService;
 import com.jproger.conferencetelegrambot.users.dto.UserDto;
@@ -31,6 +35,8 @@ public class TopicService {
     private final TopicMapper topicMapper;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
+    private final RatingRepository ratingRepository;
+    private final RatingMapper ratingMapper;
 
     public PageResponseDto<TopicDto> getTopics(@Valid PageRequestDto page) {
         Page<TopicDto> topics = topicRepository.findAll(PageRequest.of(page.getPage(), page.getSize()))
@@ -66,7 +72,23 @@ public class TopicService {
                 .map(q -> questionMapper.toQuestionDto(q, getUserById(q.getUserId())));
     }
 
-    private Question createQuestion(Long userId, Topic topic, String description) {
+    public Optional<RatingDto> createRating(long userId, long topicId, int value) {
+        return topicRepository.findById(topicId)
+                .map(t -> createRating(userId, t, value))
+                .map(ratingMapper::toRatingDto);
+    }
+
+    private Rating createRating(long userId, Topic topic, int value) {
+        return ratingRepository.save(
+                Rating.builder()
+                        .userId(userId)
+                        .topic(topic)
+                        .value(value)
+                        .build()
+        );
+    }
+
+    private Question createQuestion(long userId, Topic topic, String description) {
         return questionRepository.save(
                 Question.builder()
                         .userId(userId)

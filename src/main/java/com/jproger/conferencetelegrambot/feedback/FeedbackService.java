@@ -3,7 +3,7 @@ package com.jproger.conferencetelegrambot.feedback;
 import com.jproger.conferencetelegrambot.common.dto.PageRequestDto;
 import com.jproger.conferencetelegrambot.common.dto.PageResponseDto;
 import com.jproger.conferencetelegrambot.feedback.dto.FeedbackDto;
-import com.jproger.conferencetelegrambot.feedback.entities.Feedback;
+import com.jproger.conferencetelegrambot.feedback.entities.DobbyFeedback;
 import com.jproger.conferencetelegrambot.feedback.mappers.FeedbackMapper;
 import com.jproger.conferencetelegrambot.feedback.repositories.FeedbackRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class FeedbackService {
 
     @Nonnull
     public FeedbackDto createFeedback(long userId, @Nonnull String text) {
-        Feedback feedback = feedbackRepository.save(
-                Feedback.builder()
+        DobbyFeedback feedback = feedbackRepository.save(
+                DobbyFeedback.builder()
                         .comment(text)
                         .userId(userId)
                         .build()

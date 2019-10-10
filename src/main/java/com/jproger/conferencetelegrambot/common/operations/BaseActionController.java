@@ -7,9 +7,11 @@ import com.jproger.conferencetelegrambot.common.actions.Action.ChannelType;
 import com.jproger.conferencetelegrambot.common.actions.SendTextMessageSystemAction;
 import com.jproger.conferencetelegrambot.common.operations.exceptions.UserActionException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class BaseActionController<T extends Action> implements ActionConsumer {
     private static final String COMMON_ERROR_TEXT = "Извините, неизвестная мне ошибка...";
@@ -33,8 +35,12 @@ public abstract class BaseActionController<T extends Action> implements ActionCo
         try {
             acceptTAction((T) action);
         } catch (UserActionException ex) {
+            log.error("USER ACTION EXCEPTION action: {}", action, ex);
+
             sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), ex.getMessage());
         } catch (Throwable ex) {
+            log.error("THROWABLE action: {}", action, ex);
+
             sendTextMessageToUser(action.getChannel(), action.getChannelUserId(), COMMON_ERROR_TEXT);
         }
     }
